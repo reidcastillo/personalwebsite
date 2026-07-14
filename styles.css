@@ -105,10 +105,10 @@ main {
 }
 
 .hero {
-  align-items: end;
+  align-items: center;
   display: grid;
-  gap: 24px;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 330px);
+  gap: clamp(24px, 4vw, 52px);
+  grid-template-columns: minmax(0, 1fr) minmax(440px, 540px);
   min-height: calc(100svh - 92px);
   padding: 48px 0 72px;
 }
@@ -128,7 +128,7 @@ p {
 }
 
 h1 {
-  font-size: clamp(4.7rem, 16vw, 13.8rem);
+  font-size: clamp(4.5rem, 9vw, 8.2rem);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 0.78;

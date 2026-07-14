@@ -31,41 +31,6 @@
     </header>
 
     <main id="top">
-      <section class="rubik-section hero-cube" id="cube" aria-label="Interactive 3D photo cube">
-        <div class="rubik-lab">
-          <div class="rubik-shell" data-puzzle-shell>
-            <div class="cube-help">photo cube</div>
-
-            <div class="puzzle-controls" aria-label="Photo puzzle controls">
-              <button class="puzzle-arrow top c0" type="button" data-col="0" data-direction="up" aria-label="Move left column up">⌃</button>
-              <button class="puzzle-arrow top c1" type="button" data-col="1" data-direction="up" aria-label="Move middle column up">⌃</button>
-              <button class="puzzle-arrow top c2" type="button" data-col="2" data-direction="up" aria-label="Move right column up">⌃</button>
-
-              <button class="puzzle-arrow left r0" type="button" data-row="0" data-direction="left" aria-label="Move top row left">‹</button>
-              <button class="puzzle-arrow left r1" type="button" data-row="1" data-direction="left" aria-label="Move middle row left">‹</button>
-              <button class="puzzle-arrow left r2" type="button" data-row="2" data-direction="left" aria-label="Move bottom row left">‹</button>
-
-              <button class="puzzle-arrow right r0" type="button" data-row="0" data-direction="right" aria-label="Move top row right">›</button>
-              <button class="puzzle-arrow right r1" type="button" data-row="1" data-direction="right" aria-label="Move middle row right">›</button>
-              <button class="puzzle-arrow right r2" type="button" data-row="2" data-direction="right" aria-label="Move bottom row right">›</button>
-
-              <button class="puzzle-arrow bottom c0" type="button" data-col="0" data-direction="down" aria-label="Move left column down">⌄</button>
-              <button class="puzzle-arrow bottom c1" type="button" data-col="1" data-direction="down" aria-label="Move middle column down">⌄</button>
-              <button class="puzzle-arrow bottom c2" type="button" data-col="2" data-direction="down" aria-label="Move right column down">⌄</button>
-            </div>
-
-            <div class="cube-viewport" aria-label="3D interactive photo cube">
-              <div class="rubik-cube" data-rubik-cube></div>
-            </div>
-
-            <div class="cube-actions">
-              <button type="button" data-puzzle-scramble>scramble</button>
-              <button type="button" data-puzzle-reset>reset</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="eyebrow">hi, i'm reid</p>
@@ -75,10 +40,37 @@
             little idea wants to become real next.
           </p>
         </div>
-        <div class="hero-card" aria-label="Site note">
-          <span>currently</span>
-          <strong>making the portfolio more playful</strong>
-          <small>cube first, words after</small>
+        <div class="hero-cube" id="cube" aria-label="Interactive 3D photo cube">
+          <div class="rubik-lab">
+            <div class="rubik-shell" data-puzzle-shell>
+              <div class="puzzle-controls" aria-label="Photo puzzle controls">
+                <button class="puzzle-arrow top c0" type="button" data-col="0" data-direction="up" aria-label="Move left column up">⌃</button>
+                <button class="puzzle-arrow top c1" type="button" data-col="1" data-direction="up" aria-label="Move middle column up">⌃</button>
+                <button class="puzzle-arrow top c2" type="button" data-col="2" data-direction="up" aria-label="Move right column up">⌃</button>
+
+                <button class="puzzle-arrow left r0" type="button" data-row="0" data-direction="left" aria-label="Move top row left">‹</button>
+                <button class="puzzle-arrow left r1" type="button" data-row="1" data-direction="left" aria-label="Move middle row left">‹</button>
+                <button class="puzzle-arrow left r2" type="button" data-row="2" data-direction="left" aria-label="Move bottom row left">‹</button>
+
+                <button class="puzzle-arrow right r0" type="button" data-row="0" data-direction="right" aria-label="Move top row right">›</button>
+                <button class="puzzle-arrow right r1" type="button" data-row="1" data-direction="right" aria-label="Move middle row right">›</button>
+                <button class="puzzle-arrow right r2" type="button" data-row="2" data-direction="right" aria-label="Move bottom row right">›</button>
+
+                <button class="puzzle-arrow bottom c0" type="button" data-col="0" data-direction="down" aria-label="Move left column down">⌄</button>
+                <button class="puzzle-arrow bottom c1" type="button" data-col="1" data-direction="down" aria-label="Move middle column down">⌄</button>
+                <button class="puzzle-arrow bottom c2" type="button" data-col="2" data-direction="down" aria-label="Move right column down">⌄</button>
+              </div>
+
+              <div class="cube-viewport" aria-label="3D interactive photo cube">
+                <div class="rubik-cube" data-rubik-cube></div>
+              </div>
+
+              <div class="cube-actions">
+                <button type="button" data-puzzle-scramble>scramble</button>
+                <button type="button" data-puzzle-reset>reset</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

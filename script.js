@@ -77,6 +77,16 @@ let isTurning = false;
 let viewX = -24;
 let viewY = -34;
 
+const defaultScramble = [
+  ["y", 1, 1],
+  ["x", -1, -1],
+  ["y", -1, -1],
+  ["x", 1, 1],
+  ["y", 0, 1],
+  ["x", 0, -1],
+  ["y", 1, -1],
+];
+
 function rotateVector([x, y, z], axis, direction) {
   if (axis === "x") return direction > 0 ? [x, -z, y] : [x, z, -y];
   if (axis === "y") return direction > 0 ? [z, y, -x] : [-z, y, x];
@@ -127,11 +137,15 @@ function stickerArtwork(sticker) {
   if (!sticker) return null;
 
   if (sticker.sourceFace === "front") {
+    const photoPositions = ["11.5%", "50%", "88.5%"];
+    const column = sticker.sourceIndex % 3;
+    const row = Math.floor(sticker.sourceIndex / 3);
+
     return {
       background: "url(assets/reid-cube-photo-square.png)",
-      size: "300% 300%",
-      x: `${(sticker.sourceIndex % 3) * 50}%`,
-      y: `${Math.floor(sticker.sourceIndex / 3) * 50}%`,
+      size: "360% 360%",
+      x: photoPositions[column],
+      y: photoPositions[row],
       photo: true,
     };
   }
@@ -216,28 +230,35 @@ async function turnLayer(axis, layer, direction, animate = true) {
   isTurning = true;
 
   const axisIndex = axis === "x" ? 0 : axis === "y" ? 1 : 2;
-  const affected = cubies.filter((cubie) => cubie.coord[axisIndex] === layer);
+  const affectedIds = new Set(
+    cubies
+      .filter((cubie) => cubie.coord[axisIndex] === layer)
+      .map((cubie) => cubie.id),
+  );
+
+  applyTurn(axis, layer, direction);
+  renderCube();
 
   if (animate) {
-    const animations = affected.map((cubie) => {
+    const animations = cubies
+      .filter((cubie) => affectedIds.has(cubie.id))
+      .map((cubie) => {
       const node = rubikCube.querySelector(`[data-cubie-id="${cubie.id}"]`);
       if (!node) return null;
 
       const base = cubieTransform(cubie);
       return node.animate(
         [
+          { transform: `${turnAxisTransform(axis, -90 * direction)} ${base}` },
           { transform: base },
-          { transform: `${turnAxisTransform(axis, 90 * direction)} ${base}` },
         ],
         { duration: 360, easing: "cubic-bezier(.2,.8,.2,1)" },
       ).finished.catch(() => undefined);
-    });
+      });
 
     await Promise.all(animations.filter(Boolean));
   }
 
-  applyTurn(axis, layer, direction);
-  renderCube();
   isTurning = false;
 }
 
@@ -264,6 +285,14 @@ function resetCube() {
   renderCube();
 }
 
+function loadDefaultScramble() {
+  cubies = createCubies();
+  defaultScramble.forEach(([axis, layer, direction]) => {
+    applyTurn(axis, layer, direction);
+  });
+  renderCube();
+}
+
 async function scrambleCube() {
   if (isTurning) return;
   const controls = puzzleControls.filter((button) => button.dataset.row !== undefined || button.dataset.col !== undefined);
@@ -275,7 +304,7 @@ async function scrambleCube() {
 }
 
 if (rubikCube) {
-  resetCube();
+  loadDefaultScramble();
   setView();
 }
 
