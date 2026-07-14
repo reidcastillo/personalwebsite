@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A playful personal website and LinkedIn landing page for Reid Castillo."
+    >
+    <title>Reid Castillo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="preload" href="assets/reid-cube-photo-square.png" as="image">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cube-overrides.css">
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header" aria-label="Primary">
+      <a class="logo" href="#top">reidcastillo.website</a>
+      <nav>
+        <a href="#about">about</a>
+        <a href="#cube">cube</a>
+        <a href="#projects">projects</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="rubik-section hero-cube" id="cube" aria-label="Interactive 3D photo cube">
+        <div class="rubik-lab">
+          <div class="rubik-shell" data-puzzle-shell>
+            <div class="cube-help">photo cube</div>
+
+            <div class="puzzle-controls" aria-label="Photo puzzle controls">
+              <button class="puzzle-arrow top c0" type="button" data-col="0" data-direction="up" aria-label="Move left column up">⌃</button>
+              <button class="puzzle-arrow top c1" type="button" data-col="1" data-direction="up" aria-label="Move middle column up">⌃</button>
+              <button class="puzzle-arrow top c2" type="button" data-col="2" data-direction="up" aria-label="Move right column up">⌃</button>
+
+              <button class="puzzle-arrow left r0" type="button" data-row="0" data-direction="left" aria-label="Move top row left">‹</button>
+              <button class="puzzle-arrow left r1" type="button" data-row="1" data-direction="left" aria-label="Move middle row left">‹</button>
+              <button class="puzzle-arrow left r2" type="button" data-row="2" data-direction="left" aria-label="Move bottom row left">‹</button>
+
+              <button class="puzzle-arrow right r0" type="button" data-row="0" data-direction="right" aria-label="Move top row right">›</button>
+              <button class="puzzle-arrow right r1" type="button" data-row="1" data-direction="right" aria-label="Move middle row right">›</button>
+              <button class="puzzle-arrow right r2" type="button" data-row="2" data-direction="right" aria-label="Move bottom row right">›</button>
+
+              <button class="puzzle-arrow bottom c0" type="button" data-col="0" data-direction="down" aria-label="Move left column down">⌄</button>
+              <button class="puzzle-arrow bottom c1" type="button" data-col="1" data-direction="down" aria-label="Move middle column down">⌄</button>
+              <button class="puzzle-arrow bottom c2" type="button" data-col="2" data-direction="down" aria-label="Move right column down">⌄</button>
+            </div>
+
+            <div class="cube-viewport" aria-label="3D interactive photo cube">
+              <div class="rubik-cube" data-rubik-cube></div>
+            </div>
+
+            <div class="cube-actions">
+              <button type="button" data-puzzle-scramble>scramble</button>
+              <button type="button" data-puzzle-reset>reset</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">hi, i'm reid</p>
+          <h1 id="hero-title">I build web things that feel useful and alive.</h1>
+          <p class="lede">
+            A personal site for LinkedIn, experiments, projects, and whatever
+            little idea wants to become real next.
+          </p>
+        </div>
+        <div class="hero-card" aria-label="Site note">
+          <span>currently</span>
+          <strong>making the portfolio more playful</strong>
+          <small>cube first, words after</small>
+        </div>
+      </section>
+
+      <section class="about" id="about" aria-labelledby="about-title">
+        <h2 id="about-title">About</h2>
+        <div>
+          <p>
+            I like interfaces with a point of view: clear enough to use, weird
+            enough to remember, and grounded enough to actually ship.
+          </p>
+          <ul>
+            <li>web experiences</li>
+            <li>product thinking</li>
+            <li>workflow tools</li>
+            <li>visual systems</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="projects" id="projects" aria-labelledby="projects-title">
+        <div class="section-title">
+          <p class="eyebrow">selected things</p>
+          <h2 id="projects-title">Projects in the cup</h2>
+          <p>
+            Click a slip. Drag one around. The cup is a little project holder,
+            because flat cards were behaving too politely.
+          </p>
+        </div>
+
+        <div class="project-stage" data-stage>
+          <div class="cup-wrap" data-cup>
+            <button class="project-slip is-active" type="button" data-project="launch" style="--r: -16deg; --x: -178px; --y: -52px; --accent: #fb4d3d;">
+              <span>01</span>
+              Launch Page
+            </button>
+            <button class="project-slip" type="button" data-project="system" style="--r: -5deg; --x: -58px; --y: -86px; --accent: #ffd166;">
+              <span>02</span>
+              Tiny System
+            </button>
+            <button class="project-slip" type="button" data-project="tool" style="--r: 8deg; --x: 64px; --y: -82px; --accent: #06d6a0;">
+              <span>03</span>
+              Work Tool
+            </button>
+            <button class="project-slip" type="button" data-project="archive" style="--r: 18deg; --x: 180px; --y: -48px; --accent: #8ecae6;">
+              <span>04</span>
+              Archive
+            </button>
+
+            <div class="cup" aria-hidden="true">
+              <div class="cup-rim"></div>
+              <div class="cup-face">
+                <span>REID</span>
+                <span>WEB</span>
+              </div>
+              <div class="cup-shadow"></div>
+            </div>
+          </div>
+
+          <article class="project-panel" data-project-panel>
+            <p class="panel-kicker">01 / Launch Page</p>
+            <h3>Make the first impression do actual work.</h3>
+            <p>
+              A sharp personal homepage that tells people who you are, what you
+              make, and where to go next without feeling like a resume template.
+            </p>
+            <a href="#contact">talk about this</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="notes" aria-label="Working style">
+        <p>good sites can be useful, strange, fast, readable, and fun at once.</p>
+        <p>that is the whole trick.</p>
+      </section>
+
+      <section class="contact" id="contact" aria-labelledby="contact-title">
+        <p class="eyebrow">next step</p>
+        <h2 id="contact-title">Want to make this yours?</h2>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <button type="button" data-copy-email="hello@example.com">Email</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
