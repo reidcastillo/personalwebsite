@@ -162,6 +162,7 @@ const repinBoard = document.querySelector("[data-repin-board]");
 const emailButton = document.querySelector("[data-copy-email]");
 const contactForm = document.querySelector("[data-contact-form]");
 const formStatus = document.querySelector("[data-form-status]");
+const aboutGator = document.querySelector(".about-gator");
 
 let cubies = [];
 let isTurning = false;
@@ -1435,6 +1436,24 @@ if (emailButton) {
     window.setTimeout(() => {
       emailButton.textContent = originalText;
     }, 1600);
+  });
+}
+
+if (aboutGator) {
+  aboutGator.addEventListener("pointermove", (event) => {
+    const rect = aboutGator.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    const depth = Math.max(-18, Math.min(22, (0.5 - Math.hypot(x, y)) * 52));
+    aboutGator.style.setProperty("--gator-depth", `${depth}px`);
+    aboutGator.style.setProperty("--gator-tilt-x", `${x * 12}deg`);
+    aboutGator.style.setProperty("--gator-tilt-y", `${-y * 10}deg`);
+  });
+
+  aboutGator.addEventListener("pointerleave", () => {
+    aboutGator.style.setProperty("--gator-depth", "0px");
+    aboutGator.style.setProperty("--gator-tilt-x", "0deg");
+    aboutGator.style.setProperty("--gator-tilt-y", "0deg");
   });
 }
 

@@ -83,7 +83,7 @@ main {
 }
 
 .hero-cube {
-  transform: translate(clamp(32px, 5vw, 72px), clamp(-88px, -7vw, -48px));
+  transform: translate(clamp(32px, 5vw, 72px), clamp(-54px, -4.5vw, -22px));
 }
 
 .eyebrow {
@@ -151,7 +151,7 @@ h1 {
 .about {
   display: grid;
   gap: clamp(22px, 4vw, 48px);
-  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  grid-template-columns: minmax(220px, 0.58fr) minmax(0, 1.12fr) minmax(128px, 0.3fr);
   overflow: hidden;
 }
 
@@ -186,6 +186,51 @@ h1 {
   display: grid;
   gap: 20px;
   max-width: 980px;
+}
+
+.about-gator {
+  --gator-depth: 0px;
+  --gator-tilt-x: 0deg;
+  --gator-tilt-y: 0deg;
+  align-self: center;
+  justify-self: end;
+  margin: 0;
+  position: relative;
+  transform: perspective(560px) translateZ(var(--gator-depth)) rotateX(var(--gator-tilt-y)) rotateY(var(--gator-tilt-x));
+  transform-style: preserve-3d;
+  transition: transform 180ms ease;
+  width: clamp(132px, 15.5vw, 186px);
+}
+
+.about-gator::after {
+  background:
+    radial-gradient(circle at 34% 22%, rgba(141, 235, 197, 0.42) 0 7%, rgba(141, 235, 197, 0.16) 15%, transparent 32%),
+    linear-gradient(118deg, transparent 18%, rgba(169, 255, 220, 0.24) 34%, transparent 56%);
+  content: "";
+  inset: 0;
+  mask: url("assets/uf-pixel-gator.png?v=about-gator-8") center / contain no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  pointer-events: none;
+  position: absolute;
+  transform: translateZ(22px);
+  -webkit-mask: url("assets/uf-pixel-gator.png?v=about-gator-8") center / contain no-repeat;
+}
+
+.about-gator img {
+  animation: gatorSpin 6.5s steps(24, end) infinite;
+  display: block;
+  image-rendering: auto;
+  position: relative;
+  transform-origin: 50% 52%;
+  width: 100%;
+  z-index: 1;
+}
+
+@keyframes gatorSpin {
+  0% { transform: rotateY(0deg) rotate(-2deg); }
+  50% { transform: rotateY(180deg) rotate(2deg); }
+  100% { transform: rotateY(360deg) rotate(-2deg); }
 }
 
 .about ul {
@@ -976,6 +1021,12 @@ h1 {
     max-width: 360px;
   }
 
+  .about-gator {
+    justify-self: center;
+    margin-inline: auto;
+    width: clamp(128px, 36vw, 168px);
+  }
+
   .cup-wrap {
     min-height: 610px;
   }
@@ -1046,22 +1097,22 @@ h1 {
     width: 108px;
   }
 
-  .project-slip:nth-child(1) {
+  .project-slip[data-project="launch"] {
     --x: -70px !important;
     --y: -70px !important;
   }
 
-  .project-slip:nth-child(2) {
+  .project-slip[data-project="tool"] {
     --x: 70px !important;
     --y: -70px !important;
   }
 
-  .project-slip:nth-child(3) {
+  .project-slip[data-project="archive"] {
     --x: -70px !important;
     --y: 70px !important;
   }
 
-  .project-slip:nth-child(4) {
+  .project-slip[data-project="system"] {
     --x: 70px !important;
     --y: 70px !important;
   }
