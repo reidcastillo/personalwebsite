@@ -1,27 +1,27 @@
 const projectCopy = {
   launch: {
-    kicker: "01 / Launch Page",
-    title: "Make the first impression do actual work.",
+    kicker: "01 / Software Engineering Internship · Summer 2025",
+    title: "KIDZHACK",
     body:
-      "A sharp personal homepage that tells people who you are, what you make, and where to go next without feeling like a resume template.",
+      "Contributed to an elementary student check-in platform using AWS, Python, JavaScript, Angular, and Git. I developed role-based authentication with custom AWS Lambda Authorizers and refactored the desktop-only interface for clean mobile use.",
   },
   system: {
-    kicker: "02 / Tiny System",
-    title: "Turn scattered ideas into one little operating system.",
+    kicker: "02 / Full-Stack Project · Summer 2024",
+    title: "Weekly Cleaning Quotes",
     body:
-      "A lightweight dashboard for notes, links, reminders, and project status. Small enough to use every day, structured enough to matter.",
+      "A mobile-friendly estimating app for a residential cleaning business. I built the Python and Flask backend, integrated housing-data API requests, designed the branded Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
   },
   tool: {
-    kicker: "03 / Work Tool",
-    title: "Build the boring helper that saves the whole afternoon.",
+    kicker: "03 / Limelyte · Product + Full Stack",
+    title: "Limelyte",
     body:
-      "A practical internal tool concept: clean inputs, instant feedback, and a playful surface that makes repeat work feel less heavy.",
+      "Specs: React and JavaScript interface work, Node-style application structure, database-minded flows, responsive design, and deployment awareness. For employers, Limelyte is a compact proof of full-stack judgment: I can shape a product idea, make the interface understandable, connect the technical pieces, and explain why the build matters.",
   },
   archive: {
-    kicker: "04 / Archive",
-    title: "Keep experiments visible instead of hiding them in folders.",
+    kicker: "04 / Team Project · Spring 2024",
+    title: "Vehicle Venue",
     body:
-      "A living shelf for sketches, prototypes, tiny apps, visual studies, and the half-finished sparks that deserve a second look.",
+      "A car-rental application built by a four-person team using Python, PyQt6, PyMongo, and MongoDB. I helped build real-time inventory management, dynamic vehicle filtering, and role-based views for administrators, employees, and customers.",
   },
 };
 
@@ -67,13 +67,18 @@ const puzzleControls = [...document.querySelectorAll(".puzzle-arrow")];
 const puzzleReset = document.querySelector("[data-puzzle-reset]");
 const puzzleScramble = document.querySelector("[data-puzzle-scramble]");
 const cup = document.querySelector("[data-cup]");
+const wastebin = document.querySelector("[data-wastebin]");
 const stage = document.querySelector("[data-stage]");
 const panel = document.querySelector("[data-project-panel]");
 const slips = [...document.querySelectorAll(".project-slip")];
 const emailButton = document.querySelector("[data-copy-email]");
+const contactForm = document.querySelector("[data-contact-form]");
+const formStatus = document.querySelector("[data-form-status]");
 
 let cubies = [];
 let isTurning = false;
+let activeProject = null;
+let isCrumplingPaper = false;
 let viewX = -24;
 let viewY = -34;
 
@@ -356,22 +361,608 @@ if (puzzleScramble) {
 
 function selectProject(projectName) {
   const content = projectCopy[projectName];
-  if (!content || !panel) return;
+  if (!content || !panel || isCrumplingPaper) return;
+
+  activeProject = projectName;
 
   slips.forEach((slip) => {
     slip.classList.toggle("is-active", slip.dataset.project === projectName);
+    slip.classList.toggle("is-held", slip.dataset.project === projectName);
   });
 
+  panel.classList.remove("is-idle");
+  const actionHref = content.href || "#contact";
+  const actionLabel = content.linkLabel || "talk about this";
+  const opensNewTab = actionHref.endsWith(".pdf");
   panel.innerHTML = `
     <p class="panel-kicker">${content.kicker}</p>
     <h3>${content.title}</h3>
     <p>${content.body}</p>
-    <a href="#contact">talk about this</a>
+    <div class="paper-actions">
+      <a href="${actionHref}"${opensNewTab ? ' target="_blank" rel="noreferrer"' : ""}>${actionLabel}</a>
+      <button class="crumple-button" type="button" data-crumple>crumple</button>
+    </div>
   `;
+}
+
+const ballFrames = new WeakMap();
+
+function stopPaperBallPhysics(ball) {
+  const frame = ballFrames.get(ball);
+  if (frame) cancelAnimationFrame(frame);
+  ballFrames.delete(ball);
+  ball.classList.remove("is-airborne");
+  ball.dataset.velocityX = "0";
+  ball.dataset.velocityY = "0";
+}
+
+function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0) {
+  if (!stage) return;
+  stopPaperBallPhysics(ball);
+
+  let x = Number.parseFloat(ball.style.left) || 0;
+  let y = Number.parseFloat(ball.style.top) || 0;
+  let velocityX = Math.max(-2400, Math.min(2400, initialVelocityX));
+  let velocityY = Math.max(-2400, Math.min(2400, initialVelocityY));
+  let rotation = Number.parseFloat(ball.dataset.rotation) || 0;
+  let previousTime = performance.now();
+
+  ball.classList.add("is-airborne");
+  ball.dataset.velocityX = String(velocityX);
+  ball.dataset.velocityY = String(velocityY);
+
+  const tick = (time) => {
+    const delta = Math.min((time - previousTime) / 1000, 0.032);
+    const maxX = stage.clientWidth - ball.offsetWidth;
+    let floorY = stage.clientHeight - ball.offsetHeight - 48;
+    const stageRect = stage.getBoundingClientRect();
+    const previousBottom = stageRect.top + y + ball.offsetHeight;
+    previousTime = time;
+
+    const queuedVelocityX = Number.parseFloat(ball.dataset.velocityX);
+    const queuedVelocityY = Number.parseFloat(ball.dataset.velocityY);
+    if (Number.isFinite(queuedVelocityX)) velocityX = queuedVelocityX;
+    if (Number.isFinite(queuedVelocityY)) velocityY = queuedVelocityY;
+
+    velocityY += 2500 * delta;
+    x += velocityX * delta;
+    y += velocityY * delta;
+    rotation += velocityX * delta * 0.22;
+
+    if (wastebin) {
+      const binRect = wastebin.getBoundingClientRect();
+      const openingY = binRect.top + 17;
+      const ballCenterX = stageRect.left + x + ball.offsetWidth / 2;
+      const ballCenterY = stageRect.top + y + ball.offsetHeight / 2;
+      const currentBottom = stageRect.top + y + ball.offsetHeight;
+      const currentTop = stageRect.top + y;
+      const bodyTop = binRect.top + 23;
+      const bodyProgress = Math.max(0, Math.min(1, (ballCenterY - bodyTop) / Math.max(1, binRect.bottom - bodyTop)));
+      const wallInset = binRect.width * (0.06 + bodyProgress * 0.14);
+      const binLeft = binRect.left + wallInset;
+      const binRight = binRect.right - wallInset;
+      const isWithinOpening =
+        ballCenterX > binRect.left + binRect.width * 0.08 &&
+        ballCenterX < binRect.right - binRect.width * 0.08;
+
+      if (velocityY > 0 && isWithinOpening && previousBottom <= openingY && currentBottom >= openingY) {
+        ball.dataset.insideBin = "true";
+      }
+
+      let isInsideBin = ball.dataset.insideBin === "true";
+      if (isInsideBin && (currentBottom < openingY - 4 || ballCenterX < binRect.left || ballCenterX > binRect.right)) {
+        ball.dataset.insideBin = "false";
+        isInsideBin = false;
+      }
+
+      if (isInsideBin) {
+        floorY = Math.min(floorY, binRect.bottom - stageRect.top - ball.offsetHeight - 3);
+      }
+
+      const overlapsRimX =
+        stageRect.left + x + ball.offsetWidth > binRect.left + binRect.width * 0.05 &&
+        stageRect.left + x < binRect.right - binRect.width * 0.05;
+      if (!isInsideBin && velocityY > 0 && overlapsRimX && !isWithinOpening && previousBottom <= openingY && currentBottom >= openingY) {
+        y = openingY - stageRect.top - ball.offsetHeight;
+        velocityY = -Math.abs(velocityY) * 0.2;
+      }
+
+      const overlapsBinHeight = currentBottom > bodyTop && currentTop < binRect.bottom;
+      if (isInsideBin && overlapsBinHeight) {
+        const innerLeft = binLeft - stageRect.left;
+        const innerRight = binRight - stageRect.left - ball.offsetWidth;
+        if (x < innerLeft) {
+          x = innerLeft;
+          velocityX = Math.abs(velocityX) * 0.22;
+        } else if (x > innerRight) {
+          x = innerRight;
+          velocityX = -Math.abs(velocityX) * 0.22;
+        }
+      } else if (overlapsBinHeight && x + ball.offsetWidth + stageRect.left > binLeft && ballCenterX < binRect.left + binRect.width / 2) {
+        x = binLeft - stageRect.left - ball.offsetWidth;
+        velocityX = -Math.max(70, Math.abs(velocityX) * 0.3);
+      } else if (overlapsBinHeight && x + stageRect.left < binRight && ballCenterX >= binRect.left + binRect.width / 2) {
+        x = binRight - stageRect.left;
+        velocityX = Math.max(70, Math.abs(velocityX) * 0.3);
+      }
+    }
+
+    const ballRadius = ball.offsetWidth / 2;
+    stage.querySelectorAll(".paper-ball").forEach((otherBall) => {
+      if (otherBall === ball || otherBall.classList.contains("is-dragging")) return;
+
+      let otherX = Number.parseFloat(otherBall.style.left) || 0;
+      let otherY = Number.parseFloat(otherBall.style.top) || 0;
+      const deltaX = otherX + otherBall.offsetWidth / 2 - (x + ballRadius);
+      const deltaY = otherY + otherBall.offsetHeight / 2 - (y + ballRadius);
+      const distance = Math.hypot(deltaX, deltaY);
+      const minimumDistance = ballRadius + otherBall.offsetWidth / 2;
+      if (distance <= 0 || distance >= minimumDistance) return;
+
+      const normalX = deltaX / distance;
+      const normalY = deltaY / distance;
+      const overlap = minimumDistance - distance;
+      x -= normalX * overlap * 0.5;
+      y -= normalY * overlap * 0.5;
+      otherX += normalX * overlap * 0.5;
+      otherY += normalY * overlap * 0.5;
+      otherBall.style.left = otherX + "px";
+      otherBall.style.top = otherY + "px";
+
+      let otherVelocityX = Number.parseFloat(otherBall.dataset.velocityX) || 0;
+      let otherVelocityY = Number.parseFloat(otherBall.dataset.velocityY) || 0;
+      const relativeSpeed = (otherVelocityX - velocityX) * normalX + (otherVelocityY - velocityY) * normalY;
+      if (relativeSpeed < 0) {
+        const impulse = (-(1 + 0.18) * relativeSpeed) / 2;
+        velocityX -= impulse * normalX;
+        velocityY -= impulse * normalY;
+        otherVelocityX += impulse * normalX;
+        otherVelocityY += impulse * normalY;
+        otherBall.dataset.velocityX = String(otherVelocityX);
+        otherBall.dataset.velocityY = String(otherVelocityY);
+
+        if (!ballFrames.get(otherBall)) {
+          startPaperBallPhysics(otherBall, otherVelocityX, otherVelocityY);
+        }
+      }
+    });
+
+    if (x <= 0 || x >= maxX) {
+      x = Math.max(0, Math.min(maxX, x));
+      velocityX *= -0.38;
+    }
+
+    let isOnFloor = false;
+    if (y >= floorY) {
+      y = floorY;
+      isOnFloor = true;
+
+      if (Math.abs(velocityY) > 90) {
+        velocityY *= -0.24;
+      } else {
+        velocityY = 0;
+      }
+
+      velocityX *= 0.86;
+    }
+
+    ball.style.left = x + "px";
+    ball.style.top = y + "px";
+    ball.style.transform = "rotate(" + rotation + "deg)";
+    ball.dataset.rotation = String(rotation);
+    ball.dataset.velocityX = String(velocityX);
+    ball.dataset.velocityY = String(velocityY);
+
+    if (isOnFloor && velocityY === 0 && Math.abs(velocityX) < 8) {
+      stopPaperBallPhysics(ball);
+      return;
+    }
+
+    const frame = requestAnimationFrame(tick);
+    ballFrames.set(ball, frame);
+  };
+
+  const frame = requestAnimationFrame(tick);
+  ballFrames.set(ball, frame);
+}
+
+function makePaperBallDraggable(ball) {
+  if (!stage) return;
+
+  const moveBall = (left, top) => {
+    const maxLeft = stage.clientWidth - ball.offsetWidth;
+    const maxTop = stage.clientHeight - ball.offsetHeight - 48;
+    ball.style.left = Math.max(0, Math.min(maxLeft, left)) + "px";
+    ball.style.top = Math.max(0, Math.min(maxTop, top)) + "px";
+  };
+
+  ball.tabIndex = 0;
+  ball.setAttribute("aria-label", "Crumpled project paper. Drag to move.");
+
+  ball.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    stopPaperBallPhysics(ball);
+    ball.dataset.insideBin = "false";
+    ball.focus({ preventScroll: true });
+
+    const startLeft = Number.parseFloat(ball.style.left) || 0;
+    const startTop = Number.parseFloat(ball.style.top) || 0;
+    const startX = event.clientX;
+    const startY = event.clientY;
+    let previousX = event.clientX;
+    let previousY = event.clientY;
+    let previousTime = performance.now();
+    let velocityX = 0;
+    let velocityY = 0;
+
+    ball.classList.add("is-dragging");
+    ball.setPointerCapture(event.pointerId);
+
+    const move = (moveEvent) => {
+      const time = performance.now();
+      const delta = Math.max((time - previousTime) / 1000, 0.008);
+      const sampleVelocityX = (moveEvent.clientX - previousX) / delta;
+      const sampleVelocityY = (moveEvent.clientY - previousY) / delta;
+      velocityX = velocityX * 0.35 + sampleVelocityX * 0.65;
+      velocityY = velocityY * 0.35 + sampleVelocityY * 0.65;
+      previousX = moveEvent.clientX;
+      previousY = moveEvent.clientY;
+      previousTime = time;
+
+      moveBall(
+        startLeft + moveEvent.clientX - startX,
+        startTop + moveEvent.clientY - startY,
+      );
+    };
+
+    const finish = (finishEvent) => {
+      ball.classList.remove("is-dragging");
+      ball.removeEventListener("pointermove", move);
+      ball.removeEventListener("pointerup", finish);
+      ball.removeEventListener("pointercancel", finish);
+      startPaperBallPhysics(
+        ball,
+        finishEvent.type === "pointercancel" ? 0 : velocityX,
+        finishEvent.type === "pointercancel" ? 0 : velocityY,
+      );
+    };
+
+    ball.addEventListener("pointermove", move);
+    ball.addEventListener("pointerup", finish);
+    ball.addEventListener("pointercancel", finish);
+  });
+
+  ball.addEventListener("keydown", (event) => {
+    const step = event.shiftKey ? 24 : 10;
+    const left = Number.parseFloat(ball.style.left) || 0;
+    const top = Number.parseFloat(ball.style.top) || 0;
+    const movements = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, -step],
+      ArrowDown: [0, step],
+    };
+    const movement = movements[event.key];
+
+    if (!movement) return;
+    event.preventDefault();
+    moveBall(left + movement[0], top + movement[1]);
+    startPaperBallPhysics(ball, movement[0] * 14, movement[1] * 14);
+  });
+}
+
+function makeWastebinDraggable() {
+  if (!wastebin || !stage) return;
+
+  let currentX = 0;
+  let currentY = 0;
+  let rotation = 0;
+  let velocityX = 0;
+  let velocityY = 0;
+  let angularVelocity = 0;
+  let physicsFrame = 0;
+
+  const moveBin = (x, y, angle = rotation) => {
+    const maxX = Math.max(0, (stage.clientWidth - wastebin.offsetWidth) / 2);
+    const previousX = currentX;
+    const previousY = currentY;
+    currentX = Math.max(-maxX, Math.min(maxX, x));
+    currentY = Math.max(-320, Math.min(0, y));
+    rotation = Math.max(-24, Math.min(24, angle));
+    wastebin.style.setProperty("--bin-x", currentX + "px");
+    wastebin.style.setProperty("--bin-y", currentY + "px");
+    wastebin.style.setProperty("--bin-rotation", rotation + "deg");
+
+    const travelX = currentX - previousX;
+    const travelY = currentY - previousY;
+    if (travelX !== 0 || travelY !== 0) {
+      stage.querySelectorAll('.paper-ball[data-inside-bin="true"]').forEach((ball) => {
+        const ballX = Number.parseFloat(ball.style.left) || 0;
+        const ballY = Number.parseFloat(ball.style.top) || 0;
+        ball.style.left = ballX + travelX + "px";
+        ball.style.top = ballY + travelY + "px";
+      });
+    }
+  };
+
+  const wakePaperBalls = () => {
+    stage.querySelectorAll(".paper-ball").forEach((ball) => {
+      if (!ballFrames.get(ball) && !ball.classList.contains("is-dragging")) {
+        startPaperBallPhysics(ball, 0, 0);
+      }
+    });
+  };
+
+  const stopBinPhysics = () => {
+    if (physicsFrame) cancelAnimationFrame(physicsFrame);
+    physicsFrame = 0;
+  };
+
+  const startBinPhysics = () => {
+    stopBinPhysics();
+    let previousTime = performance.now();
+
+    const tick = (time) => {
+      const delta = Math.min((time - previousTime) / 1000, 0.032);
+      const maxX = Math.max(0, (stage.clientWidth - wastebin.offsetWidth) / 2);
+      previousTime = time;
+
+      velocityY += 1800 * delta;
+      let nextX = currentX + velocityX * delta;
+      let nextY = currentY + velocityY * delta;
+      angularVelocity += -rotation * 18 * delta;
+      angularVelocity *= Math.pow(0.06, delta);
+      rotation += angularVelocity * delta;
+
+      if (nextX <= -maxX || nextX >= maxX) {
+        nextX = Math.max(-maxX, Math.min(maxX, nextX));
+        velocityX *= -0.22;
+      }
+
+      let onFloor = false;
+      if (nextY >= 0) {
+        nextY = 0;
+        onFloor = true;
+        velocityY = Math.abs(velocityY) > 80 ? -Math.abs(velocityY) * 0.08 : 0;
+        velocityX *= 0.78;
+        angularVelocity *= 0.62;
+      }
+
+      moveBin(nextX, nextY, rotation);
+      wakePaperBalls();
+
+      if (onFloor && velocityY === 0 && Math.abs(velocityX) < 5 && Math.abs(rotation) < 0.25 && Math.abs(angularVelocity) < 0.5) {
+        moveBin(currentX, 0, 0);
+        velocityX = 0;
+        angularVelocity = 0;
+        physicsFrame = 0;
+        return;
+      }
+
+      physicsFrame = requestAnimationFrame(tick);
+    };
+
+    physicsFrame = requestAnimationFrame(tick);
+  };
+
+  wastebin.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    stopBinPhysics();
+    wastebin.focus({ preventScroll: true });
+
+    const rimRect = event.target.getBoundingClientRect();
+    const grabRatio = (event.clientX - rimRect.left) / rimRect.width;
+    const grabSide = grabRatio < 0.36 ? -1 : grabRatio > 0.64 ? 1 : 0;
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const initialX = currentX;
+    const initialY = currentY;
+    const initialRotation = rotation;
+    let previousX = event.clientX;
+    let previousY = event.clientY;
+    let previousRotation = rotation;
+    let previousTime = performance.now();
+
+    wastebin.style.setProperty(
+      "--bin-origin",
+      grabSide < 0 ? "5% 17px" : grabSide > 0 ? "95% 17px" : "50% 17px",
+    );
+    wastebin.classList.add("is-dragging");
+    wastebin.setPointerCapture(event.pointerId);
+
+    const move = (moveEvent) => {
+      const time = performance.now();
+      const delta = Math.max((time - previousTime) / 1000, 0.008);
+      const sampleVelocityX = (moveEvent.clientX - previousX) / delta;
+      const sampleVelocityY = (moveEvent.clientY - previousY) / delta;
+      velocityX = velocityX * 0.35 + sampleVelocityX * 0.65;
+      velocityY = velocityY * 0.35 + sampleVelocityY * 0.65;
+
+      const dragX = moveEvent.clientX - startX;
+      const dragY = moveEvent.clientY - startY;
+      const swing = grabSide === 0 ? 0 : grabSide * dragY * 0.06 + velocityX * 0.012;
+      moveBin(
+        initialX + dragX,
+        initialY + dragY,
+        initialRotation + swing,
+      );
+      angularVelocity = (rotation - previousRotation) / delta;
+      previousX = moveEvent.clientX;
+      previousY = moveEvent.clientY;
+      previousRotation = rotation;
+      previousTime = time;
+      wakePaperBalls();
+    };
+
+    const finish = (finishEvent) => {
+      wastebin.classList.remove("is-dragging");
+      wastebin.removeEventListener("pointermove", move);
+      wastebin.removeEventListener("pointerup", finish);
+      wastebin.removeEventListener("pointercancel", finish);
+      if (finishEvent.type === "pointercancel") {
+        velocityX = 0;
+        velocityY = 0;
+        angularVelocity = 0;
+      }
+      startBinPhysics();
+    };
+
+    wastebin.addEventListener("pointermove", move);
+    wastebin.addEventListener("pointerup", finish);
+    wastebin.addEventListener("pointercancel", finish);
+  });
+
+  wastebin.addEventListener("keydown", (event) => {
+    const step = event.shiftKey ? 24 : 10;
+    const directions = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, -step],
+      ArrowDown: [0, step],
+    };
+    const direction = directions[event.key];
+    if (!direction) return;
+
+    event.preventDefault();
+    stopBinPhysics();
+    moveBin(currentX + direction[0], currentY + direction[1], rotation);
+    velocityX = direction[0] * 12;
+    velocityY = direction[1] * 12;
+    startBinPhysics();
+  });
+}
+
+makeWastebinDraggable();
+
+async function crumpleProject() {
+  if (!panel || !stage || !activeProject || isCrumplingPaper) return;
+  isCrumplingPaper = true;
+
+  const selectedSlip = slips.find((slip) => slip.dataset.project === activeProject);
+  const panelRect = panel.getBoundingClientRect();
+  const sourceRect = selectedSlip?.getBoundingClientRect() || panelRect;
+  const stageRect = stage.getBoundingClientRect();
+  const ballSize = 68;
+  const startLeft = sourceRect.left + sourceRect.width / 2 - ballSize / 2;
+  const startTop = sourceRect.top + sourceRect.height / 2 - ballSize / 2;
+  const flight = (selectedSlip || panel).cloneNode(true);
+  const sourceRotation = selectedSlip
+    ? getComputedStyle(selectedSlip).getPropertyValue("--r").trim() || "0deg"
+    : "0deg";
+  const paperColor = selectedSlip
+    ? getComputedStyle(selectedSlip).getPropertyValue("--accent").trim() || "#fffef9"
+    : "#fffef9";
+
+  flight.classList.remove("is-idle", "is-active", "is-held", "is-crumpled");
+  flight.classList.add("paper-flight");
+  flight.removeAttribute("data-project-panel");
+  flight.removeAttribute("data-project");
+  flight.removeAttribute("type");
+  flight.setAttribute("aria-hidden", "true");
+  Object.assign(flight.style, {
+    left: `${sourceRect.left}px`,
+    top: `${sourceRect.top}px`,
+    width: `${sourceRect.width}px`,
+    height: `${sourceRect.height}px`,
+    minHeight: "0px",
+    transform: `rotate(${sourceRotation})`,
+  });
+  document.body.append(flight);
+
+  panel.classList.add("is-idle");
+  selectedSlip?.classList.remove("is-active", "is-held");
+  selectedSlip?.classList.add("is-crumpled");
+
+  await flight.animate(
+    [
+      {
+        left: `${sourceRect.left}px`,
+        top: `${sourceRect.top}px`,
+        width: `${sourceRect.width}px`,
+        height: `${sourceRect.height}px`,
+        borderRadius: "0%",
+        padding: "20px 14px 14px",
+        transform: `rotate(${sourceRotation})`,
+      },
+      {
+        left: `${startLeft}px`,
+        top: `${startTop}px`,
+        width: `${ballSize}px`,
+        height: `${ballSize}px`,
+        borderRadius: "48%",
+        padding: "0px",
+        transform: "rotate(24deg)",
+      },
+      {
+        left: `${startLeft}px`,
+        top: `${startTop}px`,
+        width: `${ballSize}px`,
+        height: `${ballSize}px`,
+        borderRadius: "52%",
+        padding: "0px",
+        transform: "rotate(-18deg) scale(0.92)",
+      },
+    ],
+    { duration: 460, easing: "cubic-bezier(.68,-0.25,.32,1.25)", fill: "forwards" },
+  ).finished.catch(() => undefined);
+
+  flight.remove();
+
+  const ball = document.createElement("div");
+  ball.className = "paper-ball";
+  ball.style.setProperty("--paper-color", paperColor);
+
+  const startX = startLeft - stageRect.left;
+  const startY = startTop - stageRect.top;
+  const floorY = stage.clientHeight - ballSize - 48;
+  const targetX = Math.max(
+    18,
+    Math.min(stage.clientWidth - ballSize - 18, stage.clientWidth * 0.64 + (Math.random() - 0.5) * 90),
+  );
+  const travelX = targetX - startX;
+  const travelY = floorY - startY;
+
+  ball.style.left = `${startX}px`;
+  ball.style.top = `${startY}px`;
+  stage.append(ball);
+
+  const dropAnimation = ball.animate(
+    [
+      { transform: "translate(0, 0) rotate(0deg)" },
+      { transform: `translate(${travelX * 0.35}px, ${travelY * 0.18}px) rotate(145deg)`, offset: 0.28 },
+      { transform: `translate(${travelX}px, ${travelY}px) rotate(430deg)`, offset: 0.78 },
+      { transform: `translate(${travelX}px, ${travelY - 8}px) rotate(455deg)`, offset: 0.9 },
+      { transform: `translate(${travelX}px, ${travelY}px) rotate(475deg)` },
+    ],
+    { duration: 640, easing: "cubic-bezier(.35,.05,.25,1)", fill: "forwards" },
+  );
+
+  await dropAnimation.finished.catch(() => undefined);
+  dropAnimation.cancel();
+
+  ball.style.left = `${targetX}px`;
+  ball.style.top = `${floorY}px`;
+  ball.style.transform = "rotate(475deg)";
+  ball.dataset.rotation = "475";
+  makePaperBallDraggable(ball);
+  startPaperBallPhysics(ball, 0, 0);
+
+  panel.innerHTML = "";
+  activeProject = null;
+  isCrumplingPaper = false;
+}
+
+if (panel) {
+  panel.addEventListener("click", (event) => {
+    if (event.target.closest("[data-crumple]")) {
+      crumpleProject();
+    }
+  });
 }
 
 if (stage && cup) {
   stage.addEventListener("pointermove", (event) => {
+    if (wastebin?.classList.contains("is-dragging")) return;
     const rect = stage.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - 0.5;
     const y = (event.clientY - rect.top) / rect.height - 0.5;
@@ -419,6 +1010,10 @@ slips.forEach((slip) => {
     slip.classList.remove("is-dragging");
     slip.releasePointerCapture(event.pointerId);
 
+    if (!moved) {
+      selectProject(slip.dataset.project);
+    }
+
     window.setTimeout(() => {
       moved = false;
     }, 0);
@@ -445,5 +1040,21 @@ if (emailButton) {
     window.setTimeout(() => {
       emailButton.textContent = originalText;
     }, 1600);
+  });
+}
+
+if (contactForm) {
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(contactForm);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+    const subject = encodeURIComponent(`Website note from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+
+    if (formStatus) formStatus.textContent = "Opening your email app...";
+    window.location.href = `mailto:reid.castillo@ufl.edu?subject=${subject}&body=${body}`;
   });
 }
