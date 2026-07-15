@@ -4,24 +4,31 @@ const projectCopy = {
     title: "KIDZHACK",
     body:
       "Contributed to an elementary student check-in platform using AWS, Python, JavaScript, Angular, and Git. I developed role-based authentication with custom AWS Lambda Authorizers and refactored the desktop-only interface for clean mobile use.",
+    actions: [],
   },
   system: {
     kicker: "02 / Full-Stack Project · Summer 2024",
     title: "Weekly Cleaning Quotes",
     body:
       "A mobile-friendly estimating app for a residential cleaning business. I built the Python and Flask backend, integrated housing-data API requests, designed the branded Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
+    actions: [
+      { label: "view project", href: "https://weeklycleaningquotes.com/" },
+      { label: "view bitbucket", href: "https://bitbucket.org/reidcastillo/workspace/projects/CLEAN" },
+    ],
   },
   tool: {
     kicker: "03 / Limelyte · Product + Full Stack",
     title: "Limelyte",
     body:
       "Specs: React and JavaScript interface work, Node-style application structure, database-minded flows, responsive design, and deployment awareness. For employers, Limelyte is a compact proof of full-stack judgment: I can shape a product idea, make the interface understandable, connect the technical pieces, and explain why the build matters.",
+    actions: [{ label: "view project", href: "https://limelyte.vercel.app/" }],
   },
   archive: {
     kicker: "04 / A.I. Backed Academic Productivity Tool · Jan 2026 - May 2026",
     title: "FlowState",
     body:
       "Solely responsible for frontend development and user experience design, building 10+ production-ready pages and workflows with the Mantine React component library. I collaborated on LLM integrations for textbook summarization, concept explanations, contextual question answering, and dynamic study material generation from uploaded course content. FlowState turns textbook chapters into structured summaries, 5+ flashcards per chapter, and repeatable 10-question quizzes so students can create personalized study materials in seconds.",
+    actions: [{ label: "view project", href: "https://bitbucket.org/reidcastillo/workspace/projects/SP26" }],
   },
 };
 
@@ -148,6 +155,7 @@ const wastebin = document.querySelector("[data-wastebin]");
 const stage = document.querySelector("[data-stage]");
 const panel = document.querySelector("[data-project-panel]");
 const slips = [...document.querySelectorAll(".project-slip")];
+const repinBoard = document.querySelector("[data-repin-board]");
 const emailButton = document.querySelector("[data-copy-email]");
 const contactForm = document.querySelector("[data-contact-form]");
 const formStatus = document.querySelector("[data-form-status]");
@@ -158,6 +166,9 @@ let activeProject = null;
 let isCrumplingPaper = false;
 let viewX = -24;
 let viewY = -34;
+let ambientCubeActive = true;
+let ambientCubeFrame = 0;
+let ambientCubeTimer = 0;
 
 const defaultScramble = [
   ["y", 1, 1],
@@ -224,7 +235,7 @@ function stickerArtwork(sticker) {
     const row = Math.floor(sticker.sourceIndex / 3);
 
     return {
-      background: "url(assets/reid-cube-photo-square.png)",
+      background: "url(assets/reid-cube-photo-square.png?v=yellow-portrait-1)",
       size: "360% 360%",
       x: photoPositions[column],
       y: photoPositions[row],
@@ -344,6 +355,45 @@ async function turnLayer(axis, layer, direction, animate = true) {
   isTurning = false;
 }
 
+function stopAmbientCube() {
+  ambientCubeActive = false;
+  if (ambientCubeFrame) cancelAnimationFrame(ambientCubeFrame);
+  if (ambientCubeTimer) clearTimeout(ambientCubeTimer);
+  ambientCubeFrame = 0;
+  ambientCubeTimer = 0;
+}
+
+function startAmbientCube(delay = 0) {
+  if (!rubikCube || ambientCubeActive) return;
+  if (ambientCubeTimer) clearTimeout(ambientCubeTimer);
+  ambientCubeTimer = window.setTimeout(() => {
+    ambientCubeActive = true;
+    runAmbientCube();
+  }, delay);
+}
+
+function runAmbientCube() {
+  let lastTurn = performance.now();
+
+  const tick = async (time) => {
+    if (!ambientCubeActive) return;
+    viewY += 0.018;
+    setView();
+
+    if (!isTurning && time - lastTurn > 4200) {
+      lastTurn = time;
+      const axis = Math.random() > 0.5 ? "x" : "y";
+      const layer = [-1, 0, 1][Math.floor(Math.random() * 3)];
+      const direction = Math.random() > 0.5 ? 1 : -1;
+      await turnLayer(axis, layer, direction, true);
+    }
+
+    ambientCubeFrame = requestAnimationFrame(tick);
+  };
+
+  ambientCubeFrame = requestAnimationFrame(tick);
+}
+
 function turnFromControl(button, animate = true) {
   if (button.dataset.row !== undefined) {
     const row = Number(button.dataset.row);
@@ -388,6 +438,7 @@ async function scrambleCube() {
 if (rubikCube) {
   loadDefaultScramble();
   setView();
+  runAmbientCube();
 }
 
 if (cubeViewport) {
@@ -399,6 +450,7 @@ if (cubeViewport) {
 
   cubeViewport.addEventListener("pointerdown", (event) => {
     if (event.target.closest("button")) return;
+    stopAmbientCube();
     isDragging = true;
     startX = event.clientX;
     startY = event.clientY;
@@ -422,19 +474,52 @@ if (cubeViewport) {
   cubeViewport.addEventListener("pointercancel", () => {
     isDragging = false;
   });
+
+  cubeViewport.addEventListener("pointerenter", stopAmbientCube);
+  cubeViewport.addEventListener("pointerleave", () => startAmbientCube(4500));
 }
 
 puzzleControls.forEach((button) => {
-  button.addEventListener("click", () => turnFromControl(button));
+  button.addEventListener("click", () => {
+    stopAmbientCube();
+    turnFromControl(button);
+  });
 });
 
 if (puzzleReset) {
-  puzzleReset.addEventListener("click", resetCube);
+  puzzleReset.addEventListener("click", () => {
+    stopAmbientCube();
+    resetCube();
+  });
 }
 
 if (puzzleScramble) {
-  puzzleScramble.addEventListener("click", scrambleCube);
+  puzzleScramble.addEventListener("click", () => {
+    stopAmbientCube();
+    scrambleCube();
+  });
 }
+
+function updateRepinControl() {
+  if (!repinBoard) return;
+  repinBoard.hidden = !slips.length || !slips.every((slip) => slip.classList.contains("is-crumpled"));
+}
+
+function repinAllProjects() {
+  slips.forEach((slip) => slip.classList.remove("is-crumpled", "is-held", "is-active"));
+  stage?.querySelectorAll(".paper-ball").forEach((ball) => {
+    stopPaperBallPhysics(ball);
+    ball.remove();
+  });
+  if (panel) {
+    panel.innerHTML = "";
+    panel.classList.add("is-idle");
+  }
+  activeProject = null;
+  updateRepinControl();
+}
+
+repinBoard?.addEventListener("click", repinAllProjects);
 
 function selectProject(projectName) {
   const content = projectCopy[projectName];
@@ -448,15 +533,17 @@ function selectProject(projectName) {
   });
 
   panel.classList.remove("is-idle");
-  const actionHref = content.href || "#contact";
-  const actionLabel = content.linkLabel || "talk about this";
-  const opensNewTab = actionHref.endsWith(".pdf");
+  const actionLinks = (content.actions || [])
+    .map(
+      (action) => `<a href="${action.href}" target="_blank" rel="noreferrer">${action.label}</a>`,
+    )
+    .join("");
   panel.innerHTML = `
     <p class="panel-kicker">${content.kicker}</p>
     <h3>${content.title}</h3>
     <p>${content.body}</p>
     <div class="paper-actions">
-      <a href="${actionHref}"${opensNewTab ? ' target="_blank" rel="noreferrer"' : ""}>${actionLabel}</a>
+      <div class="project-links">${actionLinks}</div>
       <button class="crumple-button" type="button" data-crumple>crumple</button>
     </div>
   `;
@@ -484,7 +571,7 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
   let rotation = Number.parseFloat(ball.dataset.rotation) || 0;
   let previousTime = performance.now();
   let lastImpactTime = 0;
-  let playedBinImpact = ball.dataset.playedBinImpact === "true";
+  let lastBinEntryTime = 0;
 
   ball.classList.add("is-airborne");
   ball.dataset.velocityX = String(velocityX);
@@ -524,12 +611,12 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
         ballCenterX > binRect.left + binRect.width * 0.08 &&
         ballCenterX < binRect.right - binRect.width * 0.08;
 
-      if (velocityY > 0 && isWithinOpening && previousBottom <= openingY && currentBottom >= openingY) {
+      const wasInsideBin = ball.dataset.insideBin === "true";
+      if (velocityY > 0 && isWithinOpening && !wasInsideBin && previousBottom <= openingY && currentBottom >= openingY) {
         ball.dataset.insideBin = "true";
-        if (!playedBinImpact) {
+        if (time - lastBinEntryTime > 180) {
           playImpactSound("metal");
-          playedBinImpact = true;
-          ball.dataset.playedBinImpact = "true";
+          lastBinEntryTime = time;
         }
       }
 
@@ -624,11 +711,7 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
 
       if (impactVelocity > 180 && time - lastImpactTime > 180) {
         const isInsideBin = ball.dataset.insideBin === "true";
-        if (isInsideBin && !playedBinImpact) {
-          playImpactSound("metal");
-          playedBinImpact = true;
-          ball.dataset.playedBinImpact = "true";
-        } else if (!isInsideBin) {
+        if (!isInsideBin) {
           playImpactSound("floor");
         }
         lastImpactTime = time;
@@ -758,6 +841,7 @@ function makeWastebinDraggable() {
   let velocityY = 0;
   let angularVelocity = 0;
   let physicsFrame = 0;
+  let lastBinFloorImpact = 0;
 
   const moveBin = (x, y, angle = rotation) => {
     const maxX = Math.max(0, (stage.clientWidth - wastebin.offsetWidth) / 2);
@@ -818,8 +902,13 @@ function makeWastebinDraggable() {
 
       let onFloor = false;
       if (nextY >= 0) {
+        const impactVelocity = velocityY;
         nextY = 0;
         onFloor = true;
+        if (impactVelocity > 140 && time - lastBinFloorImpact > 220) {
+          playImpactSound("metal");
+          lastBinFloorImpact = time;
+        }
         velocityY = Math.abs(velocityY) > 80 ? -Math.abs(velocityY) * 0.08 : 0;
         velocityX *= 0.78;
         angularVelocity *= 0.62;
@@ -970,6 +1059,7 @@ async function crumpleProject() {
   panel.classList.add("is-idle");
   selectedSlip?.classList.remove("is-active", "is-held");
   selectedSlip?.classList.add("is-crumpled");
+  updateRepinControl();
 
   await flight.animate(
     [
@@ -1013,12 +1103,27 @@ async function crumpleProject() {
   const startX = startLeft - stageRect.left;
   const startY = startTop - stageRect.top;
   const floorY = stage.clientHeight - ballSize - 48;
-  const targetX = Math.max(
-    18,
-    Math.min(stage.clientWidth - ballSize - 18, stage.clientWidth * 0.64 + (Math.random() - 0.5) * 90),
-  );
+  let targetX = Math.max(18, Math.min(stage.clientWidth - ballSize - 18, startX + (Math.random() - 0.5) * 64));
+  let targetY = floorY;
+  let landsInBin = false;
+
+  if (wastebin) {
+    const binRect = wastebin.getBoundingClientRect();
+    const openingLeft = binRect.left - stageRect.left + binRect.width * 0.08;
+    const openingRight = binRect.right - stageRect.left - binRect.width * 0.08;
+    const startCenterX = startX + ballSize / 2;
+
+    if (startCenterX > openingLeft && startCenterX < openingRight) {
+      targetX = Math.max(
+        18,
+        Math.min(stage.clientWidth - ballSize - 18, binRect.left - stageRect.left + binRect.width / 2 - ballSize / 2),
+      );
+      targetY = Math.min(floorY, binRect.bottom - stageRect.top - ballSize - 3);
+      landsInBin = true;
+    }
+  }
   const travelX = targetX - startX;
-  const travelY = floorY - startY;
+  const travelY = targetY - startY;
 
   ball.style.left = `${startX}px`;
   ball.style.top = `${startY}px`;
@@ -1039,15 +1144,20 @@ async function crumpleProject() {
   dropAnimation.cancel();
 
   ball.style.left = `${targetX}px`;
-  ball.style.top = `${floorY}px`;
+  ball.style.top = `${targetY}px`;
   ball.style.transform = "rotate(475deg)";
   ball.dataset.rotation = "475";
+  if (landsInBin) {
+    ball.dataset.insideBin = "true";
+    playImpactSound("metal");
+  }
   makePaperBallDraggable(ball);
   startPaperBallPhysics(ball, 0, 0);
 
   panel.innerHTML = "";
   activeProject = null;
   isCrumplingPaper = false;
+  updateRepinControl();
 }
 
 if (panel) {
