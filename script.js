@@ -82,23 +82,23 @@ function playImpactSound(kind = "floor") {
   const tone = context.createOscillator();
   const noise = context.createBufferSource();
   const filter = context.createBiquadFilter();
-  const duration = kind === "metal" ? 0.34 : 0.18;
+  const duration = kind === "rim" ? 0.22 : kind === "binDrop" ? 0.42 : kind === "metal" ? 0.34 : 0.18;
   const sampleRate = context.sampleRate;
   const buffer = context.createBuffer(1, sampleRate * duration, sampleRate);
   const data = buffer.getChannelData(0);
 
   for (let i = 0; i < data.length; i += 1) {
     const t = i / data.length;
-    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, kind === "metal" ? 2.1 : 3.4);
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, kind === "rim" ? 4.6 : kind === "binDrop" ? 2.8 : kind === "metal" ? 2.1 : 3.4);
   }
 
-  tone.type = kind === "metal" ? "triangle" : "sine";
-  tone.frequency.setValueAtTime(kind === "metal" ? 420 : 92, now);
-  tone.frequency.exponentialRampToValueAtTime(kind === "metal" ? 165 : 54, now + duration);
-  filter.type = kind === "metal" ? "highpass" : "lowpass";
-  filter.frequency.setValueAtTime(kind === "metal" ? 720 : 380, now);
+  tone.type = kind === "rim" ? "square" : kind === "metal" ? "triangle" : "sine";
+  tone.frequency.setValueAtTime(kind === "rim" ? 1450 : kind === "binDrop" ? 72 : kind === "metal" ? 420 : 92, now);
+  tone.frequency.exponentialRampToValueAtTime(kind === "rim" ? 760 : kind === "binDrop" ? 38 : kind === "metal" ? 165 : 54, now + duration);
+  filter.type = kind === "rim" ? "bandpass" : kind === "metal" ? "highpass" : "lowpass";
+  filter.frequency.setValueAtTime(kind === "rim" ? 2100 : kind === "binDrop" ? 260 : kind === "metal" ? 720 : 380, now);
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(kind === "metal" ? 0.18 : 0.12, now + 0.012);
+  gain.gain.exponentialRampToValueAtTime(kind === "rim" ? 0.08 : kind === "binDrop" ? 0.19 : kind === "metal" ? 0.18 : 0.12, now + 0.012);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
   noise.buffer = buffer;
@@ -391,7 +391,7 @@ function stickerArtwork(sticker) {
     const row = Math.floor(sticker.sourceIndex / 3);
 
     return {
-      background: `url(${photoSources[sticker.sourceFace]}?v=project-favicon-1)`,
+      background: `url(${photoSources[sticker.sourceFace]}?v=final-copy-1)`,
       size: "360% 360%",
       x: photoPositions[column],
       y: photoPositions[row],
@@ -476,7 +476,7 @@ function turnAxisTransform(axis, degrees) {
   return `rotateZ(${degrees}deg)`;
 }
 
-async function turnLayer(axis, layer, direction, animate = true) {
+async function turnLayer(axis, layer, direction, animate = true, duration = 360) {
   if (!rubikCube || isTurning) return;
   isTurning = true;
 
@@ -503,7 +503,7 @@ async function turnLayer(axis, layer, direction, animate = true) {
           { transform: `${turnAxisTransform(axis, -90 * direction)} ${base}` },
           { transform: base },
         ],
-        { duration: 360, easing: "cubic-bezier(.2,.8,.2,1)" },
+        { duration, easing: "cubic-bezier(.2,.8,.2,1)" },
       ).finished.catch(() => undefined);
       });
 
@@ -535,15 +535,16 @@ function runAmbientCube() {
 
   const tick = async (time) => {
     if (!ambientCubeActive) return;
-    viewY += 0.018;
+    viewY += 0.072;
+    viewX += Math.sin(time / 1800) * 0.012;
     setView();
 
-    if (!isTurning && time - lastTurn > 4200) {
+    if (!isTurning && time - lastTurn > 1850) {
       lastTurn = time;
       const axis = Math.random() > 0.5 ? "x" : "y";
       const layer = [-1, 0, 1][Math.floor(Math.random() * 3)];
       const direction = Math.random() > 0.5 ? 1 : -1;
-      await turnLayer(axis, layer, direction, true);
+      turnLayer(axis, layer, direction, true, 980).catch(() => undefined);
     }
 
     ambientCubeFrame = requestAnimationFrame(tick);
@@ -670,7 +671,10 @@ function updateRepinControl() {
 }
 
 function repinAllProjects() {
-  slips.forEach((slip) => slip.classList.remove("is-crumpled", "is-held", "is-active"));
+  slips.forEach((slip) => {
+    slip.classList.remove("is-crumpled", "is-held", "is-active");
+    slip.classList.add("is-uncrumpled");
+  });
   stage?.querySelectorAll(".paper-ball").forEach((ball) => {
     stopPaperBallPhysics(ball);
     ball.remove();
@@ -684,6 +688,15 @@ function repinAllProjects() {
 }
 
 repinBoard?.addEventListener("click", repinAllProjects);
+
+function closeProjectPanel() {
+  slips.forEach((slip) => slip.classList.remove("is-held", "is-active"));
+  if (panel) {
+    panel.innerHTML = "";
+    panel.classList.add("is-idle");
+  }
+  activeProject = null;
+}
 
 function selectProject(projectName) {
   const content = projectCopy[projectName];
@@ -705,6 +718,7 @@ function selectProject(projectName) {
     })
     .join("");
   panel.innerHTML = `
+    <button class="panel-close" type="button" data-panel-close aria-label="Keep note pinned and close details">x</button>
     <p class="panel-kicker">${content.kicker}</p>
     <h3>${content.title}</h3>
     <p>${content.body}</p>
@@ -724,6 +738,32 @@ function stopPaperBallPhysics(ball) {
   ball.classList.remove("is-airborne");
   ball.dataset.velocityX = "0";
   ball.dataset.velocityY = "0";
+}
+
+function repinBallIfOverBoard(ball) {
+  const projectName = ball.dataset.project;
+  const board = document.querySelector(".bulletin-board");
+  const slip = projectName ? slips.find((item) => item.dataset.project === projectName) : null;
+  if (!board || !slip) return false;
+
+  const ballRect = ball.getBoundingClientRect();
+  const boardRect = board.getBoundingClientRect();
+  const ballCenterX = ballRect.left + ballRect.width / 2;
+  const ballCenterY = ballRect.top + ballRect.height / 2;
+  const isOverBoard =
+    ballCenterX >= boardRect.left &&
+    ballCenterX <= boardRect.right &&
+    ballCenterY >= boardRect.top &&
+    ballCenterY <= boardRect.bottom;
+
+  if (!isOverBoard) return false;
+
+  stopPaperBallPhysics(ball);
+  ball.remove();
+  slip.classList.remove("is-crumpled", "is-held", "is-active");
+  slip.classList.add("is-uncrumpled");
+  updateRepinControl();
+  return true;
 }
 
 function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0) {
@@ -779,6 +819,21 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
       const openingRight = binRect.right - binRect.width * 0.08;
       const isWithinOpening = ballCenterX > openingLeft && ballCenterX < openingRight;
       const wasInsideBin = ball.dataset.insideBin === "true";
+      const hitsRim =
+        velocityY > 0 &&
+        !wasInsideBin &&
+        previousBottom <= openingY &&
+        currentBottom >= openingY &&
+        !isWithinOpening &&
+        ballRight > binRect.left + binRect.width * 0.04 &&
+        ballLeft < binRect.right - binRect.width * 0.04;
+
+      if (hitsRim) {
+        playImpactSound("rim");
+        y = openingY - stageRect.top - ball.offsetHeight - 2;
+        velocityY = -Math.max(260, Math.abs(velocityY) * 0.36);
+        velocityX += ballCenterX < binRect.left + binRect.width / 2 ? -120 : 120;
+      }
 
       if (velocityY > 0 && isWithinOpening && !wasInsideBin && previousBottom <= openingY && currentBottom >= openingY) {
         ball.dataset.insideBin = "true";
@@ -969,6 +1024,7 @@ function makePaperBallDraggable(ball) {
       ball.removeEventListener("pointermove", move);
       ball.removeEventListener("pointerup", finish);
       ball.removeEventListener("pointercancel", finish);
+      if (repinBallIfOverBoard(ball)) return;
       startPaperBallPhysics(
         ball,
         finishEvent.type === "pointercancel" ? 0 : velocityX,
@@ -1075,7 +1131,7 @@ function makeWastebinDraggable() {
         nextY = 0;
         onFloor = true;
         if (impactVelocity > 140 && time - lastBinFloorImpact > 220) {
-          playImpactSound("metal");
+          playImpactSound("binDrop");
           lastBinFloorImpact = time;
         }
         velocityY = Math.abs(velocityY) > 80 ? -Math.abs(velocityY) * 0.08 : 0;
@@ -1226,7 +1282,7 @@ async function crumpleProject() {
   document.body.append(flight);
 
   panel.classList.add("is-idle");
-  selectedSlip?.classList.remove("is-active", "is-held");
+  selectedSlip?.classList.remove("is-active", "is-held", "is-uncrumpled");
   selectedSlip?.classList.add("is-crumpled");
   updateRepinControl();
 
@@ -1267,6 +1323,7 @@ async function crumpleProject() {
 
   const ball = document.createElement("div");
   ball.className = "paper-ball";
+  ball.dataset.project = activeProject;
   ball.style.setProperty("--paper-color", paperColor);
 
   const startX = Math.max(0, Math.min(stage.clientWidth - ballSize, startLeft - stageRect.left));
@@ -1288,6 +1345,10 @@ async function crumpleProject() {
 
 if (panel) {
   panel.addEventListener("click", (event) => {
+    if (event.target.closest("[data-panel-close]")) {
+      closeProjectPanel();
+      return;
+    }
     if (event.target.closest("[data-crumple]")) {
       crumpleProject();
     }

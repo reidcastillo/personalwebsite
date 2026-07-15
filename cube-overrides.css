@@ -234,7 +234,7 @@
   background: transparent;
   border: 0;
   border-radius: 0;
-  color: #f28b86;
+  color: #ef2d24;
   font-family: "Bricolage Grotesque", Arial, sans-serif;
   font-size: clamp(1rem, 1.55vw, 1.2rem);
   font-weight: 500;
@@ -250,7 +250,7 @@
   background: transparent;
   box-shadow: none;
   outline: 0;
-  color: #ff6f68;
+  color: #ef2d24;
   opacity: 0.9;
   text-decoration: underline;
   transform: translateY(-2px);
