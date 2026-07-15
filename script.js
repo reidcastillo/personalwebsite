@@ -3,8 +3,8 @@ const projectCopy = {
     kicker: "01 / Software Engineering Internship · Summer 2025",
     title: "KIDZHACK",
     body:
-      "Contributed to an elementary student check-in platform using AWS, Python, JavaScript, Angular, and Git. I developed role-based authentication with custom AWS Lambda Authorizers and refactored the desktop-only interface for clean mobile use.",
-    actions: [],
+      "Summer Software Engineer Intern at educational startup. Contributed to AWS infrastructure, authentication, and frontend development that refactored a desktop-only interface for clean mobile use.",
+    actions: [{ label: "view site", href: "https://www.kidzhack.com/" }],
   },
   system: {
     kicker: "04 / Full-Stack Project · Summer 2024",
@@ -391,7 +391,7 @@ function stickerArtwork(sticker) {
     const row = Math.floor(sticker.sourceIndex / 3);
 
     return {
-      background: `url(${photoSources[sticker.sourceFace]}?v=final-copy-1)`,
+      background: `url(${photoSources[sticker.sourceFace]}?v=blue-photo-3)`,
       size: "360% 360%",
       x: photoPositions[column],
       y: photoPositions[row],
