@@ -18,12 +18,89 @@ const projectCopy = {
       "Specs: React and JavaScript interface work, Node-style application structure, database-minded flows, responsive design, and deployment awareness. For employers, Limelyte is a compact proof of full-stack judgment: I can shape a product idea, make the interface understandable, connect the technical pieces, and explain why the build matters.",
   },
   archive: {
-    kicker: "04 / Team Project · Spring 2024",
-    title: "Vehicle Venue",
+    kicker: "04 / A.I. Backed Academic Productivity Tool · Jan 2026 - May 2026",
+    title: "FlowState",
     body:
-      "A car-rental application built by a four-person team using Python, PyQt6, PyMongo, and MongoDB. I helped build real-time inventory management, dynamic vehicle filtering, and role-based views for administrators, employees, and customers.",
+      "Solely responsible for frontend development and user experience design, building 10+ production-ready pages and workflows with the Mantine React component library. I collaborated on LLM integrations for textbook summarization, concept explanations, contextual question answering, and dynamic study material generation from uploaded course content. FlowState turns textbook chapters into structured summaries, 5+ flashcards per chapter, and repeatable 10-question quizzes so students can create personalized study materials in seconds.",
   },
 };
+
+function playCrumpleSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  const context = new AudioContext();
+  const now = context.currentTime;
+  const duration = 0.42;
+  const sampleRate = context.sampleRate;
+  const buffer = context.createBuffer(1, sampleRate * duration, sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let i = 0; i < data.length; i += 1) {
+    const t = i / data.length;
+    const crackle = Math.random() * 2 - 1;
+    const envelope = Math.pow(1 - t, 2.6) * (0.28 + Math.random() * 0.72);
+    data[i] = crackle * envelope;
+  }
+
+  const source = context.createBufferSource();
+  const filter = context.createBiquadFilter();
+  const gain = context.createGain();
+
+  filter.type = "bandpass";
+  filter.frequency.setValueAtTime(1800, now);
+  filter.frequency.exponentialRampToValueAtTime(4800, now + duration * 0.45);
+  filter.Q.setValueAtTime(1.8, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.22, now + 0.025);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+  source.buffer = buffer;
+  source.connect(filter).connect(gain).connect(context.destination);
+  source.start(now);
+  source.stop(now + duration);
+  source.addEventListener("ended", () => context.close());
+}
+
+function playImpactSound(kind = "floor") {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  const context = new AudioContext();
+  const now = context.currentTime;
+  const gain = context.createGain();
+  const tone = context.createOscillator();
+  const noise = context.createBufferSource();
+  const filter = context.createBiquadFilter();
+  const duration = kind === "metal" ? 0.34 : 0.18;
+  const sampleRate = context.sampleRate;
+  const buffer = context.createBuffer(1, sampleRate * duration, sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let i = 0; i < data.length; i += 1) {
+    const t = i / data.length;
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, kind === "metal" ? 2.1 : 3.4);
+  }
+
+  tone.type = kind === "metal" ? "triangle" : "sine";
+  tone.frequency.setValueAtTime(kind === "metal" ? 420 : 92, now);
+  tone.frequency.exponentialRampToValueAtTime(kind === "metal" ? 165 : 54, now + duration);
+  filter.type = kind === "metal" ? "highpass" : "lowpass";
+  filter.frequency.setValueAtTime(kind === "metal" ? 720 : 380, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(kind === "metal" ? 0.18 : 0.12, now + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+  noise.buffer = buffer;
+  tone.connect(gain);
+  noise.connect(filter).connect(gain);
+  gain.connect(context.destination);
+  tone.start(now);
+  noise.start(now);
+  tone.stop(now + duration);
+  noise.stop(now + duration);
+  noise.addEventListener("ended", () => context.close());
+}
 
 const faceColors = {
   front: "#d8d2bf",
@@ -406,6 +483,8 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
   let velocityY = Math.max(-2400, Math.min(2400, initialVelocityY));
   let rotation = Number.parseFloat(ball.dataset.rotation) || 0;
   let previousTime = performance.now();
+  let lastImpactTime = 0;
+  let playedBinImpact = ball.dataset.playedBinImpact === "true";
 
   ball.classList.add("is-airborne");
   ball.dataset.velocityX = String(velocityX);
@@ -447,6 +526,11 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
 
       if (velocityY > 0 && isWithinOpening && previousBottom <= openingY && currentBottom >= openingY) {
         ball.dataset.insideBin = "true";
+        if (!playedBinImpact) {
+          playImpactSound("metal");
+          playedBinImpact = true;
+          ball.dataset.playedBinImpact = "true";
+        }
       }
 
       let isInsideBin = ball.dataset.insideBin === "true";
@@ -534,8 +618,21 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
 
     let isOnFloor = false;
     if (y >= floorY) {
+      const impactVelocity = velocityY;
       y = floorY;
       isOnFloor = true;
+
+      if (impactVelocity > 180 && time - lastImpactTime > 180) {
+        const isInsideBin = ball.dataset.insideBin === "true";
+        if (isInsideBin && !playedBinImpact) {
+          playImpactSound("metal");
+          playedBinImpact = true;
+          ball.dataset.playedBinImpact = "true";
+        } else if (!isInsideBin) {
+          playImpactSound("floor");
+        }
+        lastImpactTime = time;
+      }
 
       if (Math.abs(velocityY) > 90) {
         velocityY *= -0.24;
@@ -837,6 +934,7 @@ makeWastebinDraggable();
 async function crumpleProject() {
   if (!panel || !stage || !activeProject || isCrumplingPaper) return;
   isCrumplingPaper = true;
+  playCrumpleSound();
 
   const selectedSlip = slips.find((slip) => slip.dataset.project === activeProject);
   const panelRect = panel.getBoundingClientRect();

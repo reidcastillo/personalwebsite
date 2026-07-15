@@ -547,11 +547,6 @@ h1 {
   z-index: 11;
 }
 
-.wastebin:focus-visible {
-  outline: 3px solid var(--hot);
-  outline-offset: 8px;
-}
-
 .wastebin-rim {
   background: linear-gradient(#111 0 4px, transparent 4px);
   border: 0;
