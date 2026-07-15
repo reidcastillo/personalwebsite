@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 62">
+  <rect width="62" height="62" rx="10" fill="#13250f"/>
+  <g stroke="#f7f7ed" stroke-width="2" stroke-linejoin="round">
+  <rect x="4" y="4" width="14" height="14" rx="1.5" fill="#f5f1e8">
+    <animate attributeName="fill" dur="3.6s" begin="0.0s" repeatCount="indefinite" values="#f5f1e8;#ff7a1a;#1769ff;#ef2d24;#06bd61;#ffd84d;#f5f1e8"/>
+  </rect>
+  <rect x="22" y="4" width="14" height="14" rx="1.5" fill="#ff7a1a">
+    <animate attributeName="fill" dur="3.6s" begin="0.13s" repeatCount="indefinite" values="#ff7a1a;#1769ff;#ef2d24;#06bd61;#ffd84d;#f5f1e8;#ff7a1a"/>
+  </rect>
+  <rect x="40" y="4" width="14" height="14" rx="1.5" fill="#1769ff">
+    <animate attributeName="fill" dur="3.6s" begin="0.26s" repeatCount="indefinite" values="#1769ff;#ef2d24;#06bd61;#ffd84d;#f5f1e8;#ff7a1a;#1769ff"/>
+  </rect>
+  <rect x="4" y="22" width="14" height="14" rx="1.5" fill="#ef2d24">
+    <animate attributeName="fill" dur="3.6s" begin="0.39s" repeatCount="indefinite" values="#ef2d24;#06bd61;#ffd84d;#f5f1e8;#ff7a1a;#1769ff;#ef2d24"/>
+  </rect>
+  <rect x="22" y="22" width="14" height="14" rx="1.5" fill="#06bd61">
+    <animate attributeName="fill" dur="3.6s" begin="0.52s" repeatCount="indefinite" values="#06bd61;#ffd84d;#f5f1e8;#ff7a1a;#1769ff;#ef2d24;#06bd61"/>
+  </rect>
+  <rect x="40" y="22" width="14" height="14" rx="1.5" fill="#ffd84d">
+    <animate attributeName="fill" dur="3.6s" begin="0.65s" repeatCount="indefinite" values="#ffd84d;#f5f1e8;#ff7a1a;#1769ff;#ef2d24;#06bd61;#ffd84d"/>
+  </rect>
+  <rect x="4" y="40" width="14" height="14" rx="1.5" fill="#f5f1e8">
+    <animate attributeName="fill" dur="3.6s" begin="0.78s" repeatCount="indefinite" values="#f5f1e8;#ff7a1a;#1769ff;#ef2d24;#06bd61;#ffd84d;#f5f1e8"/>
+  </rect>
+  <rect x="22" y="40" width="14" height="14" rx="1.5" fill="#ff7a1a">
+    <animate attributeName="fill" dur="3.6s" begin="0.91s" repeatCount="indefinite" values="#ff7a1a;#1769ff;#ef2d24;#06bd61;#ffd84d;#f5f1e8;#ff7a1a"/>
+  </rect>
+  <rect x="40" y="40" width="14" height="14" rx="1.5" fill="#1769ff">
+    <animate attributeName="fill" dur="3.6s" begin="1.04s" repeatCount="indefinite" values="#1769ff;#ef2d24;#06bd61;#ffd84d;#f5f1e8;#ff7a1a;#1769ff"/>
+  </rect>
+  </g>
+</svg>

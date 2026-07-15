@@ -7,7 +7,7 @@ const projectCopy = {
     actions: [],
   },
   system: {
-    kicker: "02 / Full-Stack Project · Summer 2024",
+    kicker: "04 / Full-Stack Project · Summer 2024",
     title: "Weekly Cleaning Quotes",
     body:
       "A mobile-friendly estimating app for a residential cleaning business. I built the Python and Flask backend, integrated housing-data API requests, designed the branded Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
@@ -17,14 +17,17 @@ const projectCopy = {
     ],
   },
   tool: {
-    kicker: "03 / Limelyte · Product + Full Stack",
+    kicker: "02 / Limelyte · Product + Full Stack",
     title: "Limelyte",
     body:
       "Specs: React and JavaScript interface work, Node-style application structure, database-minded flows, responsive design, and deployment awareness. For employers, Limelyte is a compact proof of full-stack judgment: I can shape a product idea, make the interface understandable, connect the technical pieces, and explain why the build matters.",
-    actions: [{ label: "view project", href: "https://limelyte.vercel.app/" }],
+    actions: [
+      { label: "view site", href: "https://limelyte.vercel.app/" },
+      { label: "inquire about repository", href: "#contact" },
+    ],
   },
   archive: {
-    kicker: "04 / A.I. Backed Academic Productivity Tool · Jan 2026 - May 2026",
+    kicker: "03 / A.I. Backed Academic Productivity Tool · Jan 2026 - May 2026",
     title: "FlowState",
     body:
       "Solely responsible for frontend development and user experience design, building 10+ production-ready pages and workflows with the Mantine React component library. I collaborated on LLM integrations for textbook summarization, concept explanations, contextual question answering, and dynamic study material generation from uploaded course content. FlowState turns textbook chapters into structured summaries, 5+ flashcards per chapter, and repeatable 10-question quizzes so students can create personalized study materials in seconds.",
@@ -186,6 +189,150 @@ function rotateVector([x, y, z], axis, direction) {
   return direction > 0 ? [-y, x, z] : [y, -x, z];
 }
 
+function degreesToRadians(degrees) {
+  return (degrees * Math.PI) / 180;
+}
+
+function rotateForView([x, y, z]) {
+  const yRad = degreesToRadians(viewY);
+  const yCos = Math.cos(yRad);
+  const ySin = Math.sin(yRad);
+  const afterY = [x * yCos + z * ySin, y, -x * ySin + z * yCos];
+
+  const xRad = degreesToRadians(viewX);
+  const xCos = Math.cos(xRad);
+  const xSin = Math.sin(xRad);
+  const [rx, ry, rz] = afterY;
+  return [rx, ry * xCos - rz * xSin, ry * xSin + rz * xCos];
+}
+
+function projectedAxis(axis) {
+  const rotated = rotateForView(sideNormals[axis]);
+  return { axis, screenX: rotated[0], screenY: -rotated[1], depth: rotated[2] };
+}
+
+function visibleControlAxes() {
+  const visibleFace = ["front", "back", "right", "left", "top", "bottom"]
+    .map(projectedAxis)
+    .sort((a, b) => b.depth - a.depth)[0];
+  const faceAxis = axisName(visibleFace.axis);
+  const axes = ["right", "top", "front"]
+    .map(projectedAxis)
+    .filter((axis) => axisName(axis.axis) !== faceAxis);
+  const horizontal = [...axes].sort((a, b) => Math.abs(b.screenX) - Math.abs(a.screenX))[0];
+  const vertical = axes.find((axis) => axis.axis !== horizontal.axis);
+
+  return {
+    face: visibleFace.axis,
+    horizontal: horizontal.axis,
+    horizontalSign: horizontal.screenX >= 0 ? 1 : -1,
+    vertical: vertical.axis,
+    verticalSign: vertical.screenY <= 0 ? 1 : -1,
+  };
+}
+
+function axisName(side) {
+  if (side === "right" || side === "left") return "x";
+  if (side === "top" || side === "bottom") return "y";
+  return "z";
+}
+
+function layerFromScreenRow(row, controls = visibleControlAxes()) {
+  if (row === 1) return 0;
+  return row === 0 ? controls.verticalSign : -controls.verticalSign;
+}
+
+function layerFromScreenColumn(column, controls = visibleControlAxes()) {
+  if (column === 1) return 0;
+  return column === 0 ? -controls.horizontalSign : controls.horizontalSign;
+}
+
+function vectorForAxis(axis, layer) {
+  if (axis === "x") return [layer, 0, 0];
+  if (axis === "y") return [0, layer, 0];
+  return [0, 0, layer];
+}
+
+function addVectors(a, b) {
+  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+}
+
+function axisIndex(axis) {
+  if (axis === "x") return 0;
+  if (axis === "y") return 1;
+  return 2;
+}
+
+function axisFromSide(side) {
+  return axisName(side);
+}
+
+function visibleFaceNormal(excludedAxis) {
+  const excludedIndex = axisIndex(excludedAxis);
+  const candidates = [
+    [1, 0, 0],
+    [-1, 0, 0],
+    [0, 1, 0],
+    [0, -1, 0],
+    [0, 0, 1],
+    [0, 0, -1],
+  ].filter((candidate) => candidate[excludedIndex] === 0);
+
+  return candidates.sort((a, b) => rotateForView(b)[2] - rotateForView(a)[2])[0];
+}
+
+function visibleReferencePoint(axis, layer) {
+  return addVectors(vectorForAxis(axis, layer), visibleFaceNormal(axis));
+}
+
+function pointFromScreenSlot(horizontalAxis, horizontalLayer, verticalAxis, verticalLayer, faceNormal) {
+  return addVectors(
+    addVectors(vectorForAxis(horizontalAxis, horizontalLayer), vectorForAxis(verticalAxis, verticalLayer)),
+    faceNormal,
+  );
+}
+
+function directionForScreenMotion(axis, layer, desiredScreenX, desiredScreenY) {
+  const point = visibleReferencePoint(axis, layer);
+  const before = rotateForView(point);
+  const afterPositive = rotateForView(rotateVector(point, axis, 1));
+  const deltaX = afterPositive[0] - before[0];
+  const deltaY = -(afterPositive[1] - before[1]);
+  const dot = deltaX * desiredScreenX + deltaY * desiredScreenY;
+
+  return dot >= 0 ? 1 : -1;
+}
+
+function visibleFaceVector(controls) {
+  return sideNormals[controls.face];
+}
+
+function directionForScreenRow(row, desiredScreenX, controls) {
+  const horizontalAxis = axisFromSide(controls.horizontal);
+  const verticalAxis = axisFromSide(controls.vertical);
+  const horizontalLayer = controls.horizontalSign;
+  const verticalLayer = layerFromScreenRow(row, controls);
+  const point = pointFromScreenSlot(horizontalAxis, horizontalLayer, verticalAxis, verticalLayer, visibleFaceVector(controls));
+  const before = rotateForView(point);
+  const afterPositive = rotateForView(rotateVector(point, verticalAxis, 1));
+  const deltaX = afterPositive[0] - before[0];
+
+  return deltaX * desiredScreenX >= 0 ? 1 : -1;
+}
+
+function directionForScreenColumn(column, desiredScreenY, controls) {
+  const horizontalAxis = axisFromSide(controls.horizontal);
+  const verticalAxis = axisFromSide(controls.vertical);
+  const horizontalLayer = layerFromScreenColumn(column, controls);
+  const verticalLayer = controls.verticalSign;
+  const point = pointFromScreenSlot(horizontalAxis, horizontalLayer, verticalAxis, verticalLayer, visibleFaceVector(controls));
+  const before = rotateForView(point);
+  const afterPositive = rotateForView(rotateVector(point, horizontalAxis, 1));
+  const deltaY = -(afterPositive[1] - before[1]);
+
+  return deltaY * desiredScreenY >= 0 ? 1 : -1;
+}
+
 function stickerFor(face, [x, y, z]) {
   if (face === "front") return { sourceFace: face, sourceIndex: (1 - y) * 3 + (x + 1) };
   if (face === "back") return { sourceFace: face, sourceIndex: (1 - y) * 3 + (1 - x) };
@@ -229,17 +376,27 @@ function cubieTransform(cubie) {
 function stickerArtwork(sticker) {
   if (!sticker) return null;
 
-  if (sticker.sourceFace === "front") {
+  const photoSources = {
+    front: "assets/reid-cube-photo-square.png",
+    right: "assets/reid-cube-photo-orange.png",
+    back: "assets/reid-cube-photo-blue.png",
+    top: "assets/reid-cube-photo-white.png",
+    left: "assets/reid-cube-photo-red.png",
+    bottom: "assets/reid-cube-photo-green.png",
+  };
+
+  if (photoSources[sticker.sourceFace]) {
     const photoPositions = ["11.5%", "50%", "88.5%"];
     const column = sticker.sourceIndex % 3;
     const row = Math.floor(sticker.sourceIndex / 3);
 
     return {
-      background: "url(assets/reid-cube-photo-square.png?v=yellow-portrait-1)",
+      background: `url(${photoSources[sticker.sourceFace]}?v=project-favicon-1)`,
       size: "360% 360%",
       x: photoPositions[column],
       y: photoPositions[row],
       photo: true,
+      sourceFace: sticker.sourceFace,
     };
   }
 
@@ -249,6 +406,7 @@ function stickerArtwork(sticker) {
     x: "50%",
     y: "50%",
     photo: false,
+    sourceFace: sticker.sourceFace,
   };
 }
 
@@ -263,7 +421,7 @@ function makeCubie(cubie) {
     const sticker = cubie.stickers[side];
     const art = stickerArtwork(sticker);
 
-    face.className = `cubie-side ${side}${art ? " has-sticker" : ""}${art?.photo ? " photo" : ""}`;
+    face.className = `cubie-side ${side}${art ? " has-sticker" : ""}${art?.photo ? ` photo photo-${art.sourceFace}` : ""}`;
     face.style.transform = transform;
 
     if (art) {
@@ -395,18 +553,24 @@ function runAmbientCube() {
 }
 
 function turnFromControl(button, animate = true) {
+  const controls = visibleControlAxes();
+
   if (button.dataset.row !== undefined) {
     const row = Number(button.dataset.row);
-    const layer = 1 - row;
-    const direction = button.dataset.direction === "right" ? 1 : -1;
-    return turnLayer("y", layer, direction, animate);
+    const axis = axisName(controls.vertical);
+    const layer = layerFromScreenRow(row, controls);
+    const desiredX = button.dataset.direction === "right" ? 1 : -1;
+    const direction = directionForScreenRow(row, desiredX, controls);
+    return turnLayer(axis, layer, direction, animate);
   }
 
   if (button.dataset.col !== undefined) {
     const column = Number(button.dataset.col);
-    const layer = column - 1;
-    const direction = button.dataset.direction === "down" ? 1 : -1;
-    return turnLayer("x", layer, direction, animate);
+    const axis = axisName(controls.horizontal);
+    const layer = layerFromScreenColumn(column, controls);
+    const desiredY = button.dataset.direction === "down" ? 1 : -1;
+    const direction = directionForScreenColumn(column, desiredY, controls);
+    return turnLayer(axis, layer, direction, animate);
   }
 
   return Promise.resolve();
@@ -534,9 +698,11 @@ function selectProject(projectName) {
 
   panel.classList.remove("is-idle");
   const actionLinks = (content.actions || [])
-    .map(
-      (action) => `<a href="${action.href}" target="_blank" rel="noreferrer">${action.label}</a>`,
-    )
+    .map((action) => {
+      const isPageAnchor = action.href.startsWith("#");
+      const targetAttrs = isPageAnchor ? "" : ' target="_blank" rel="noreferrer"';
+      return `<a href="${action.href}"${targetAttrs}>${action.label}</a>`;
+    })
     .join("");
   panel.innerHTML = `
     <p class="panel-kicker">${content.kicker}</p>
@@ -598,20 +764,22 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
     if (wastebin) {
       const binRect = wastebin.getBoundingClientRect();
       const openingY = binRect.top + 17;
-      const ballCenterX = stageRect.left + x + ball.offsetWidth / 2;
+      const bodyTop = binRect.top + 23;
+      const ballLeft = stageRect.left + x;
+      const ballRight = ballLeft + ball.offsetWidth;
+      const ballCenterX = ballLeft + ball.offsetWidth / 2;
       const ballCenterY = stageRect.top + y + ball.offsetHeight / 2;
       const currentBottom = stageRect.top + y + ball.offsetHeight;
       const currentTop = stageRect.top + y;
-      const bodyTop = binRect.top + 23;
       const bodyProgress = Math.max(0, Math.min(1, (ballCenterY - bodyTop) / Math.max(1, binRect.bottom - bodyTop)));
       const wallInset = binRect.width * (0.06 + bodyProgress * 0.14);
       const binLeft = binRect.left + wallInset;
       const binRight = binRect.right - wallInset;
-      const isWithinOpening =
-        ballCenterX > binRect.left + binRect.width * 0.08 &&
-        ballCenterX < binRect.right - binRect.width * 0.08;
-
+      const openingLeft = binRect.left + binRect.width * 0.08;
+      const openingRight = binRect.right - binRect.width * 0.08;
+      const isWithinOpening = ballCenterX > openingLeft && ballCenterX < openingRight;
       const wasInsideBin = ball.dataset.insideBin === "true";
+
       if (velocityY > 0 && isWithinOpening && !wasInsideBin && previousBottom <= openingY && currentBottom >= openingY) {
         ball.dataset.insideBin = "true";
         if (time - lastBinEntryTime > 180) {
@@ -621,38 +789,39 @@ function startPaperBallPhysics(ball, initialVelocityX = 0, initialVelocityY = 0)
       }
 
       let isInsideBin = ball.dataset.insideBin === "true";
-      if (isInsideBin && (currentBottom < openingY - 4 || ballCenterX < binRect.left || ballCenterX > binRect.right)) {
+      if (isInsideBin && currentBottom < openingY - 4 && isWithinOpening) {
         ball.dataset.insideBin = "false";
         isInsideBin = false;
       }
 
       if (isInsideBin) {
         floorY = Math.min(floorY, binRect.bottom - stageRect.top - ball.offsetHeight - 3);
-      }
 
-      const overlapsRimX =
-        stageRect.left + x + ball.offsetWidth > binRect.left + binRect.width * 0.05 &&
-        stageRect.left + x < binRect.right - binRect.width * 0.05;
-      if (!isInsideBin && velocityY > 0 && overlapsRimX && !isWithinOpening && previousBottom <= openingY && currentBottom >= openingY) {
-        y = openingY - stageRect.top - ball.offsetHeight;
-        velocityY = -Math.abs(velocityY) * 0.2;
-      }
-
-      const overlapsBinHeight = currentBottom > bodyTop && currentTop < binRect.bottom;
-      if (isInsideBin && overlapsBinHeight) {
         const innerLeft = binLeft - stageRect.left;
         const innerRight = binRight - stageRect.left - ball.offsetWidth;
         if (x < innerLeft) {
           x = innerLeft;
-          velocityX = Math.abs(velocityX) * 0.22;
+          velocityX = Math.abs(velocityX) * 0.16;
         } else if (x > innerRight) {
           x = innerRight;
-          velocityX = -Math.abs(velocityX) * 0.22;
+          velocityX = -Math.abs(velocityX) * 0.16;
         }
-      } else if (overlapsBinHeight && x + ball.offsetWidth + stageRect.left > binLeft && ballCenterX < binRect.left + binRect.width / 2) {
+
+        if (currentTop < openingY && !isWithinOpening) {
+          y = openingY - stageRect.top;
+          velocityY = Math.max(35, Math.abs(velocityY) * 0.18);
+        }
+      }
+
+      const overlapsBinHeight = currentBottom > bodyTop && currentTop < binRect.bottom;
+      const overlapsRimX = ballRight > binRect.left + binRect.width * 0.05 && ballLeft < binRect.right - binRect.width * 0.05;
+      if (!isInsideBin && velocityY > 0 && overlapsRimX && !isWithinOpening && previousBottom <= openingY && currentBottom >= openingY) {
+        y = openingY - stageRect.top - ball.offsetHeight;
+        velocityY = -Math.abs(velocityY) * 0.2;
+      } else if (!isInsideBin && overlapsBinHeight && ballRight > binLeft && ballCenterX < binRect.left + binRect.width / 2) {
         x = binLeft - stageRect.left - ball.offsetWidth;
         velocityX = -Math.max(70, Math.abs(velocityX) * 0.3);
-      } else if (overlapsBinHeight && x + stageRect.left < binRight && ballCenterX >= binRect.left + binRect.width / 2) {
+      } else if (!isInsideBin && overlapsBinHeight && ballLeft < binRight && ballCenterX >= binRect.left + binRect.width / 2) {
         x = binRight - stageRect.left;
         velocityX = Math.max(70, Math.abs(velocityX) * 0.3);
       }
@@ -1100,59 +1269,16 @@ async function crumpleProject() {
   ball.className = "paper-ball";
   ball.style.setProperty("--paper-color", paperColor);
 
-  const startX = startLeft - stageRect.left;
-  const startY = startTop - stageRect.top;
-  const floorY = stage.clientHeight - ballSize - 48;
-  let targetX = Math.max(18, Math.min(stage.clientWidth - ballSize - 18, startX + (Math.random() - 0.5) * 64));
-  let targetY = floorY;
-  let landsInBin = false;
-
-  if (wastebin) {
-    const binRect = wastebin.getBoundingClientRect();
-    const openingLeft = binRect.left - stageRect.left + binRect.width * 0.08;
-    const openingRight = binRect.right - stageRect.left - binRect.width * 0.08;
-    const startCenterX = startX + ballSize / 2;
-
-    if (startCenterX > openingLeft && startCenterX < openingRight) {
-      targetX = Math.max(
-        18,
-        Math.min(stage.clientWidth - ballSize - 18, binRect.left - stageRect.left + binRect.width / 2 - ballSize / 2),
-      );
-      targetY = Math.min(floorY, binRect.bottom - stageRect.top - ballSize - 3);
-      landsInBin = true;
-    }
-  }
-  const travelX = targetX - startX;
-  const travelY = targetY - startY;
+  const startX = Math.max(0, Math.min(stage.clientWidth - ballSize, startLeft - stageRect.left));
+  const startY = Math.max(0, Math.min(stage.clientHeight - ballSize - 48, startTop - stageRect.top));
 
   ball.style.left = `${startX}px`;
   ball.style.top = `${startY}px`;
+  ball.style.transform = "rotate(24deg)";
+  ball.dataset.rotation = "24";
   stage.append(ball);
-
-  const dropAnimation = ball.animate(
-    [
-      { transform: "translate(0, 0) rotate(0deg)" },
-      { transform: `translate(${travelX * 0.35}px, ${travelY * 0.18}px) rotate(145deg)`, offset: 0.28 },
-      { transform: `translate(${travelX}px, ${travelY}px) rotate(430deg)`, offset: 0.78 },
-      { transform: `translate(${travelX}px, ${travelY - 8}px) rotate(455deg)`, offset: 0.9 },
-      { transform: `translate(${travelX}px, ${travelY}px) rotate(475deg)` },
-    ],
-    { duration: 640, easing: "cubic-bezier(.35,.05,.25,1)", fill: "forwards" },
-  );
-
-  await dropAnimation.finished.catch(() => undefined);
-  dropAnimation.cancel();
-
-  ball.style.left = `${targetX}px`;
-  ball.style.top = `${targetY}px`;
-  ball.style.transform = "rotate(475deg)";
-  ball.dataset.rotation = "475";
-  if (landsInBin) {
-    ball.dataset.insideBin = "true";
-    playImpactSound("metal");
-  }
   makePaperBallDraggable(ball);
-  startPaperBallPhysics(ball, 0, 0);
+  startPaperBallPhysics(ball, (Math.random() - 0.5) * 28, 20);
 
   panel.innerHTML = "";
   activeProject = null;
