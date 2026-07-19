@@ -269,3 +269,10 @@
   .puzzle-arrow.top { top: calc(50% - var(--cube-size) / 2 - 88px); }
   .puzzle-arrow.bottom { top: calc(50% + var(--cube-size) / 2 + 52px); }
 }
+
+
+:root[data-theme="dark"] .cube-actions button,
+:root[data-theme="dark"] .cube-actions button:hover,
+:root[data-theme="dark"] .cube-actions button:focus-visible {
+  color: #f7f1df;
+}

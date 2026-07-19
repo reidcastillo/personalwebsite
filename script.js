@@ -163,6 +163,8 @@ const emailButton = document.querySelector("[data-copy-email]");
 const contactForm = document.querySelector("[data-contact-form]");
 const formStatus = document.querySelector("[data-form-status]");
 const aboutGator = document.querySelector(".about-gator");
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const siteNav = document.querySelector(".site-nav");
 
 let cubies = [];
 let isTurning = false;
@@ -1419,6 +1421,49 @@ slips.forEach((slip) => {
     slip.classList.remove("is-dragging");
   });
 });
+
+if (siteNav) {
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  const updateNavVisibility = () => {
+    const currentScrollY = window.scrollY;
+    const scrollingDown = currentScrollY > lastScrollY + 8;
+    const scrollingUp = currentScrollY < lastScrollY - 8;
+
+    if (currentScrollY < 80 || scrollingUp) {
+      siteNav.classList.remove("is-hidden");
+    } else if (scrollingDown) {
+      siteNav.classList.add("is-hidden");
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+  };
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateNavVisibility);
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+if (themeToggle) {
+  const setTheme = (theme) => {
+    const isDark = theme === "dark";
+    document.documentElement.dataset.theme = isDark ? "dark" : "light";
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    localStorage.setItem("site-theme", isDark ? "dark" : "light");
+  };
+
+  setTheme(localStorage.getItem("site-theme") === "dark" ? "dark" : "light");
+
+  themeToggle.addEventListener("click", () => {
+    setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+  });
+}
 
 if (emailButton) {
   const originalText = emailButton.textContent;

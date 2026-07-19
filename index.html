@@ -21,11 +21,25 @@
     <link rel="preload" href="assets/reid-cube-photo-white.png?v=blue-photo-3" as="image">
     <link rel="preload" href="assets/reid-cube-photo-red.png?v=blue-photo-3" as="image">
     <link rel="preload" href="assets/reid-cube-photo-green.png?v=blue-photo-3" as="image">
-    <link rel="stylesheet" href="styles.css?v=gator-clean-1">
-    <link rel="stylesheet" href="cube-overrides.css?v=blue-photo-3">
+    <link rel="stylesheet" href="styles.css?v=dark-polish-1">
+    <link rel="stylesheet" href="cube-overrides.css?v=dark-actions-1">
+    <script>
+      if (localStorage.getItem("site-theme") === "dark") {
+        document.documentElement.dataset.theme = "dark";
+      }
+    </script>
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
+    <button class="theme-notch" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+      <span aria-hidden="true"></span>
+    </button>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#about">about</a>
+      <a href="#projects">experiences</a>
+      <a href="#tech-stack">tech stack</a>
+      <a href="#contact">contact</a>
+    </nav>
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
@@ -127,7 +141,7 @@
         </div>
       </section>
 
-      <section class="notes tech-stack" aria-labelledby="tech-stack-title">
+      <section class="notes tech-stack" id="tech-stack" aria-labelledby="tech-stack-title">
         <div class="tech-stack-heading">
           <h2 id="tech-stack-title">my tech stack</h2>
         </div>
@@ -178,6 +192,6 @@
       </section>
     </main>
 
-    <script src="script.js?v=about-gator-5"></script>
+    <script src="script.js?v=dark-nav-2"></script>
   </body>
 </html>
