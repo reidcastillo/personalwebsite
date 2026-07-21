@@ -3,14 +3,14 @@ const projectCopy = {
     kicker: "01 / Software Engineering Internship · Summer 2025",
     title: "KIDZHACK",
     body:
-      "Summer Software Engineer Intern at educational startup. Contributed to AWS infrastructure, authentication, and frontend development that refactored a desktop-only interface for clean mobile use.",
+      "KIDZHACK is an educational technology startup that builds digital learning tools for families, students, and academic communities. The platform supports more accessible learning workflows through a cleaner and more usable web experience. I contributed to AWS infrastructure, authentication, and frontend development while refactoring a desktop interface for responsive mobile use.",
     actions: [{ label: "view site", href: "https://www.kidzhack.com/" }],
   },
   system: {
     kicker: "04 / Full-Stack Project · Summer 2024",
     title: "Weekly Cleaning Quotes",
     body:
-      "A mobile-friendly estimating app for a residential cleaning business. I built the Python and Flask backend, integrated housing-data API requests, designed the branded Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
+      "Weekly Cleaning Quotes is a responsive estimating application for a residential cleaning business. The product helps customers generate clearer quote expectations before direct consultation. I built the Python and Flask backend, integrated housing data API requests, designed the Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
     actions: [
       { label: "view project", href: "https://weeklycleaningquotes.com/" },
       { label: "view bitbucket", href: "https://bitbucket.org/reidcastillo/workspace/projects/CLEAN" },
@@ -20,7 +20,7 @@ const projectCopy = {
     kicker: "02 / Limelyte · Product + Full Stack",
     title: "Limelyte",
     body:
-      "Specs: React and JavaScript interface work, Node-style application structure, database-minded flows, responsive design, and deployment awareness. For employers, Limelyte is a compact proof of full-stack judgment: I can shape a product idea, make the interface understandable, connect the technical pieces, and explain why the build matters.",
+      "Limelyte is a product oriented web application centered on clear interaction, responsive presentation, and professional storytelling. The product demonstrates how a focused concept can become a polished digital experience with clear user value. I developed the React and JavaScript interface, structured application logic, planned database aware flows, refined responsive UI behavior, and supported deployment planning.",
     actions: [
       { label: "view site", href: "https://limelyte.vercel.app/" },
       { label: "inquire about repository", href: "#contact" },
@@ -30,7 +30,7 @@ const projectCopy = {
     kicker: "03 / A.I. Backed Academic Productivity Tool · Jan 2026 - May 2026",
     title: "FlowState",
     body:
-      "Solely responsible for frontend development and user experience design, building 10+ production-ready pages and workflows with the Mantine React component library. I collaborated on LLM integrations for textbook summarization, concept explanations, contextual question answering, and dynamic study material generation from uploaded course content. FlowState turns textbook chapters into structured summaries, 5+ flashcards per chapter, and repeatable 10-question quizzes so students can create personalized study materials in seconds.",
+      "FlowState is an AI supported academic productivity tool for textbook assistance, coursework management, and academic planning. The product transforms uploaded course content into summaries, concept explanations, contextual answers, flashcards, and repeatable quizzes. I led frontend development and user experience design for 10+ production React workflows using the Mantine component library while collaborating on LLM study material generation.",
     actions: [{ label: "view project", href: "https://bitbucket.org/reidcastillo/workspace/projects/SP26" }],
   },
 };

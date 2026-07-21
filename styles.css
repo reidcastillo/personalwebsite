@@ -160,15 +160,20 @@ main {
 }
 
 .hero {
-  align-items: center;
+  align-items: start;
   display: grid;
   gap: clamp(24px, 4vw, 52px);
   grid-template-columns: minmax(0, 1fr) minmax(440px, 540px);
   min-height: calc(100svh - 36px);
-  padding: 48px 0 72px;
+  padding: clamp(28px, 6vh, 56px) 0 72px;
+}
+
+.hero-copy {
+  transform: translateY(clamp(-42px, -5vh, -18px));
 }
 
 .hero-cube {
+  align-self: center;
   transform: translate(clamp(32px, 5vw, 72px), clamp(-54px, -4.5vw, -22px));
 }
 
@@ -1097,6 +1102,10 @@ h1 {
   .hero {
     align-items: start;
     min-height: auto;
+  }
+
+  .hero-copy {
+    transform: none;
   }
 
   .hero-cube {
