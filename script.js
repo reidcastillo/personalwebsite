@@ -1516,6 +1516,9 @@ slips.forEach((slip) => {
 
 let activePhotoIndex = null;
 let topPhotoZ = photoPrints.length;
+let lastPhotoShakeAt = 0;
+let lastMotionMagnitude = null;
+let motionPermissionAsked = false;
 
 function closePhotoLightbox() {
   if (!photoLightbox) return;
@@ -1598,6 +1601,84 @@ photoCarouselButtons.forEach((button) => {
     scrollPhotoCarousel(button.dataset.photoCarousel === "next" ? 1 : -1);
   });
 });
+
+function randomBetween(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function jumblePhotoPile() {
+  if (!photoDesk || !photoPrints.length || !window.matchMedia("(hover: none), (pointer: coarse), (max-width: 880px)").matches) return;
+  if (photoLightbox && !photoLightbox.hidden) return;
+
+  if (photoDesk.classList.contains("is-carousel")) {
+    photoDesk.classList.remove("is-carousel");
+    if (photoModeToggle) {
+      photoModeToggle.textContent = "show carousel";
+      photoModeToggle.setAttribute("aria-pressed", "false");
+    }
+  }
+
+  const spreadX = Math.min(window.innerWidth * 0.44, 520);
+  const spreadY = Math.min(window.innerHeight * 0.22, 250);
+  topPhotoZ += photoPrints.length;
+
+  photoPrints.forEach((print, index) => {
+    const x = randomBetween(-spreadX, spreadX);
+    const y = randomBetween(-spreadY, spreadY);
+    const r = randomBetween(-13, 13);
+    print.style.setProperty("--photo-x", `${x.toFixed(0)}px`);
+    print.style.setProperty("--photo-y", `${y.toFixed(0)}px`);
+    print.style.setProperty("--photo-r", `${r.toFixed(1)}deg`);
+    print.style.setProperty("--drag-x", "0px");
+    print.style.setProperty("--drag-y", "0px");
+    print.style.setProperty("--photo-z", String(topPhotoZ - index));
+    print.classList.remove("is-active");
+  });
+
+  photoDesk.classList.remove("is-shake-jumbling");
+  void photoDesk.offsetWidth;
+  photoDesk.classList.add("is-shake-jumbling");
+  window.setTimeout(() => photoDesk.classList.remove("is-shake-jumbling"), 520);
+}
+
+function handlePhotoShake(event) {
+  const acceleration = event.accelerationIncludingGravity || event.acceleration;
+  if (!acceleration) return;
+
+  const x = acceleration.x || 0;
+  const y = acceleration.y || 0;
+  const z = acceleration.z || 0;
+  const magnitude = Math.sqrt(x * x + y * y + z * z);
+  const delta = lastMotionMagnitude === null ? 0 : Math.abs(magnitude - lastMotionMagnitude);
+  lastMotionMagnitude = magnitude;
+
+  const now = Date.now();
+  if (delta > 13 && now - lastPhotoShakeAt > 1300) {
+    lastPhotoShakeAt = now;
+    jumblePhotoPile();
+  }
+}
+
+async function enablePhotoMotion() {
+  if (motionPermissionAsked) return;
+  motionPermissionAsked = true;
+
+  try {
+    if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
+      const permission = await DeviceMotionEvent.requestPermission();
+      if (permission !== "granted") return;
+    }
+    window.addEventListener("devicemotion", handlePhotoShake, { passive: true });
+  } catch (_) {
+    motionPermissionAsked = false;
+  }
+}
+
+if (photoDesk) {
+  enablePhotoMotion();
+  photoDesk.addEventListener("pointerdown", enablePhotoMotion, { once: true });
+  photoDesk.addEventListener("touchstart", enablePhotoMotion, { once: true, passive: true });
+}
 
 if (photoLightbox) {
   photoLightbox.addEventListener("click", (event) => {

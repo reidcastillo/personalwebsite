@@ -1145,6 +1145,14 @@ h1 {
   transform: rotate(0deg) translateY(-10px) translateZ(var(--photo-depth));
 }
 
+.photo-desk.is-shake-jumbling .photo-stack {
+  animation: photoPileShake 520ms cubic-bezier(0.18, 0.86, 0.22, 1) both;
+}
+
+.photo-desk.is-shake-jumbling .photo-print {
+  transition: transform 520ms cubic-bezier(0.18, 0.86, 0.22, 1), box-shadow 220ms ease, filter 220ms ease;
+}
+
 .photo-print:hover,
 .photo-print:focus-visible,
 .photo-print.is-active {
@@ -1260,6 +1268,24 @@ h1 {
   line-height: 1.08;
 }
 
+
+@keyframes photoPileShake {
+  0% {
+    transform: rotate(0deg) translateX(0);
+  }
+  18% {
+    transform: rotate(-1.4deg) translateX(-10px);
+  }
+  38% {
+    transform: rotate(1.2deg) translateX(9px);
+  }
+  62% {
+    transform: rotate(-0.7deg) translateX(-5px);
+  }
+  100% {
+    transform: rotate(0deg) translateX(0);
+  }
+}
 
 @keyframes photoOverlayIn {
   from {
