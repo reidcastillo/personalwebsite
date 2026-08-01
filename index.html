@@ -21,7 +21,7 @@
     <link rel="preload" href="assets/reid-cube-photo-white.png?v=blue-photo-3" as="image">
     <link rel="preload" href="assets/reid-cube-photo-red.png?v=blue-photo-3" as="image">
     <link rel="preload" href="assets/reid-cube-photo-green.png?v=blue-photo-3" as="image">
-    <link rel="stylesheet" href="styles.css?v=hero-cube-down-1">
+    <link rel="stylesheet" href="styles.css?v=photo-carousel-cta-1">
     <link rel="stylesheet" href="cube-overrides.css?v=dark-actions-1">
     <script>
       if (localStorage.getItem("site-theme") === "dark") {
@@ -38,6 +38,7 @@
       <a href="#about">about</a>
       <a href="#projects">experiences</a>
       <a href="#tech-stack">tech stack</a>
+      <a href="#photography">photography</a>
       <a href="#contact">contact</a>
     </nav>
     <main id="top">
@@ -45,6 +46,10 @@
         <div class="hero-copy">
           <p class="eyebrow">Reid Castillo · UF CSE '26</p>
           <h1 id="hero-title">Web Developer, Backend Programmer, and Infrastructure Expert</h1>
+          <div class="hero-links" aria-label="Featured contact links">
+            <a href="https://github.com/reidcastillo" target="_blank" rel="noreferrer">github</a>
+            <a href="https://www.linkedin.com/in/reidcastillo" target="_blank" rel="noreferrer">linkedin</a>
+          </div>
         </div>
         <div class="hero-cube" id="cube" aria-label="Interactive 3D photo cube">
           <div class="rubik-lab">
@@ -149,6 +154,69 @@
         <p>AWS · React · Node · MongoDB · DigitalOcean · Ubuntu · Flask · Git · Copilot · LLMs</p>
       </section>
 
+
+
+      <section class="photography" id="photography" aria-labelledby="photography-title">
+        <div class="section-title photography-title">
+          <div>
+            <p class="eyebrow">film notes</p>
+            <h2 id="photography-title">Photography</h2>
+          </div>
+          <button class="photo-mode-toggle" type="button" data-photo-mode-toggle aria-pressed="false">show carousel</button>
+        </div>
+
+        <div class="photo-desk" data-photo-desk>
+          <button class="photo-carousel-arrow photo-carousel-prev" type="button" data-photo-carousel="prev" aria-label="Previous photo">‹</button>
+          <div class="photo-stack" aria-label="Interactive photography stack">
+            <button class="photo-print is-active" type="button" data-photo-index="0" style="--photo-r: -7deg; --photo-x: -500px; --photo-y: -82px;">
+              <img draggable="false" src="assets/photo-puebla.jpg" alt="Black and white street scene with a Puebla sign and a parked car under large trees."
+                data-full-src="assets/photo-puebla.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="1" style="--photo-r: 5deg; --photo-x: -250px; --photo-y: -18px;">
+              <img draggable="false" src="assets/photo-concert-blue.jpg" alt="Blue concert stage with a singer under a beam of light and hands raised from the crowd."
+                data-full-src="assets/photo-concert-blue.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="2" style="--photo-r: -4deg; --photo-x: -170px; --photo-y: 232px;">
+              <img draggable="false" src="assets/photo-stage-blue.jpg" alt="Dark concert photo with a performer framed by bright blue light."
+                data-full-src="assets/photo-stage-blue.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="3" style="--photo-r: 8deg; --photo-x: 350px; --photo-y: 250px;">
+              <img draggable="false" src="assets/photo-golden-crowd.jpg" alt="Golden concert light cutting across a performer with phones raised in the crowd."
+                data-full-src="assets/photo-golden-crowd.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="4" style="--photo-r: -7deg; --photo-x: 72px; --photo-y: -52px;">
+              <img draggable="false" src="assets/photo-cyan-singer.jpg" alt="Cyan stage light surrounding a performer singing alone in a wide beam."
+                data-full-src="assets/photo-cyan-singer.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="5" style="--photo-r: 5deg; --photo-x: -430px; --photo-y: 230px;">
+              <img draggable="false" src="assets/photo-gallery-window.jpg" alt="Black and white gallery hallway with silhouettes walking toward a bright window."
+                data-full-src="assets/photo-gallery-window.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="6" style="--photo-r: -5deg; --photo-x: 506px; --photo-y: 142px;">
+              <img draggable="false" src="assets/photo-arena-screen.jpg" alt="Wide arena scene with a performer beneath a glowing rectangular screen."
+                data-full-src="assets/photo-arena-screen.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="7" style="--photo-r: 9deg; --photo-x: 142px; --photo-y: 228px;">
+              <img draggable="false" src="assets/photo-motion-singer.jpg" alt="Singer caught with blue motion trails and a microphone in low light."
+                data-full-src="assets/photo-motion-singer.jpg">
+            </button>
+            <button class="photo-print" type="button" data-photo-index="8" style="--photo-r: 6deg; --photo-x: 394px; --photo-y: -104px;">
+              <img draggable="false" src="assets/photo-paper-stage.jpg" alt="Stage spotlight with paper pieces suspended above a performer."
+                data-full-src="assets/photo-paper-stage.jpg">
+            </button>
+          </div>
+          <button class="photo-carousel-arrow photo-carousel-next" type="button" data-photo-carousel="next" aria-label="Next photo">›</button>
+        </div>
+
+        <div class="photo-lightbox" data-photo-lightbox hidden>
+          <button class="photo-lightbox-close" type="button" data-photo-lightbox-close aria-label="Close photo view">×</button>
+          <figure class="photo-lightbox-frame">
+            <img data-photo-lightbox-image alt="">
+            <figcaption class="photo-bio" data-photo-bio aria-live="polite"></figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section class="contact" id="contact" aria-labelledby="contact-title">
         <p class="eyebrow">next steps</p>
         <h2 id="contact-title">Let's build something useful.</h2>
@@ -192,6 +260,6 @@
       </section>
     </main>
 
-    <script src="script.js?v=project-copy-3"></script>
+    <script src="script.js?v=photo-carousel-cta-1"></script>
   </body>
 </html>

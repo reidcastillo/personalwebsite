@@ -2,15 +2,21 @@ const projectCopy = {
   launch: {
     kicker: "01 / Software Engineering Internship · Summer 2025",
     title: "KIDZHACK",
-    body:
-      "KIDZHACK is an educational technology startup that builds digital learning tools for families, students, and academic communities. The platform supports more accessible learning workflows through a cleaner and more usable web experience. I contributed to AWS infrastructure, authentication, and frontend development while refactoring a desktop interface for responsive mobile use.",
+    body: [
+      "KIDZHACK is an educational technology startup that builds digital learning tools for families, students, and academic communities.",
+      "The platform supports more accessible learning workflows through a cleaner and more usable web experience.",
+      "I contributed to AWS infrastructure, authentication, and frontend development while refactoring a desktop interface for responsive mobile use.",
+    ],
     actions: [{ label: "view site", href: "https://www.kidzhack.com/" }],
   },
   system: {
     kicker: "04 / Full-Stack Project · Summer 2024",
     title: "Weekly Cleaning Quotes",
-    body:
-      "Weekly Cleaning Quotes is a responsive estimating application for a residential cleaning business. The product helps customers generate clearer quote expectations before direct consultation. I built the Python and Flask backend, integrated housing data API requests, designed the Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
+    body: [
+      "Weekly Cleaning Quotes is a responsive estimating application for a residential cleaning business.",
+      "The product helps customers generate clearer quote expectations before direct consultation.",
+      "I built the Python and Flask backend, integrated housing data API requests, designed the Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
+    ],
     actions: [
       { label: "view project", href: "https://weeklycleaningquotes.com/" },
       { label: "view bitbucket", href: "https://bitbucket.org/reidcastillo/workspace/projects/CLEAN" },
@@ -19,8 +25,11 @@ const projectCopy = {
   tool: {
     kicker: "02 / Limelyte · Product + Full Stack",
     title: "Limelyte",
-    body:
-      "Limelyte is a product oriented web application centered on clear interaction, responsive presentation, and professional storytelling. The product demonstrates how a focused concept can become a polished digital experience with clear user value. I developed the React and JavaScript interface, structured application logic, planned database aware flows, refined responsive UI behavior, and supported deployment planning.",
+    body: [
+      "Limelyte is a personal project built to help people discover local events, concerts, and social plans through a cleaner, more intentional browsing experience.",
+      "The product focuses on making plans feel easier to compare, save, and act on instead of burying useful options in noisy feeds.",
+      "I developed the React and JavaScript interface, structured the application logic, refined responsive UI behavior, and shaped the product flow around fast discovery and employer-ready product thinking.",
+    ],
     actions: [
       { label: "view site", href: "https://limelyte.vercel.app/" },
       { label: "inquire about repository", href: "#contact" },
@@ -29,8 +38,11 @@ const projectCopy = {
   archive: {
     kicker: "03 / A.I. Backed Academic Productivity Tool · Jan 2026 - May 2026",
     title: "FlowState",
-    body:
-      "FlowState is an AI supported academic productivity tool for textbook assistance, coursework management, and academic planning. The product transforms uploaded course content into summaries, concept explanations, contextual answers, flashcards, and repeatable quizzes. I led frontend development and user experience design for 10+ production React workflows using the Mantine component library while collaborating on LLM study material generation.",
+    body: [
+      "FlowState is an AI supported academic productivity tool for textbook assistance, coursework management, and academic planning.",
+      "The product transforms uploaded course content into summaries, concept explanations, contextual answers, flashcards, and repeatable quizzes.",
+      "I led frontend development and user experience design for 10+ production React workflows using the Mantine component library while collaborating on LLM study material generation.",
+    ],
     actions: [{ label: "view project", href: "https://bitbucket.org/reidcastillo/workspace/projects/SP26" }],
   },
 };
@@ -139,6 +151,55 @@ const sideNormals = {
   bottom: [0, -1, 0],
 };
 
+
+const photoCopy = [
+  {
+    kicker: "01 / street study",
+    title: "Puebla sign",
+    body: "A black and white street frame built around signage, tree shadow, and the packed roof of a parked car. I like how the image feels observational, crowded, and still at the same time.",
+  },
+  {
+    kicker: "02 / live music",
+    title: "Blue spotlight",
+    body: "A concert frame caught in heavy blue light, with the performer centered under the beam and the crowd reaching into the foreground. The image holds onto the feeling of being inside the room instead of standing outside it.",
+  },
+  {
+    kicker: "03 / stage blur",
+    title: "Electric silhouette",
+    body: "A darker performance image where the bright blue shape and the singer compete for attention. I like the looseness of the frame because it feels closer to memory than documentation.",
+  },
+  {
+    kicker: "04 / gold haze",
+    title: "Close to the rail",
+    body: "A warm concert frame where the spotlight, phones, and crowd all fold into the performer. The grain and yellow wash make it feel immediate, loud, and close.",
+  },
+  {
+    kicker: "05 / cyan wash",
+    title: "Alone in blue",
+    body: "A performer stands inside a huge cyan beam while the stage melts into light around him. I like the quiet center of the frame against all that saturated color.",
+  },
+  {
+    kicker: "06 / interior study",
+    title: "Window walk",
+    body: "A black and white interior image built on silhouettes, long shadows, and a bright opening at the end of the room. It feels like a pause between movement and exit.",
+  },
+  {
+    kicker: "07 / arena light",
+    title: "White screen",
+    body: "A wide concert scene held together by the glowing rectangle above the performer. The scale of the crowd becomes part of the composition without taking over the subject.",
+  },
+  {
+    kicker: "08 / motion trace",
+    title: "Blue echo",
+    body: "A low-light performance image where motion blur turns the singer into several overlapping gestures. I like how the frame feels unstable in a way that matches live music.",
+  },
+  {
+    kicker: "09 / stage fall",
+    title: "Paper rain",
+    body: "A distant stage image with paper suspended in a cone of warm light. The performer feels tiny under the scene, which makes the moment feel more theatrical.",
+  },
+];
+
 const normalSides = {
   "0,0,1": "front",
   "0,0,-1": "back",
@@ -165,6 +226,14 @@ const formStatus = document.querySelector("[data-form-status]");
 const aboutGator = document.querySelector(".about-gator");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const siteNav = document.querySelector(".site-nav");
+const photoPrints = [...document.querySelectorAll(".photo-print")];
+const photoDesk = document.querySelector("[data-photo-desk]");
+const photoModeToggle = document.querySelector("[data-photo-mode-toggle]");
+const photoCarouselButtons = [...document.querySelectorAll("[data-photo-carousel]")];
+const photoLightbox = document.querySelector("[data-photo-lightbox]");
+const photoLightboxImage = document.querySelector("[data-photo-lightbox-image]");
+const photoLightboxClose = document.querySelector("[data-photo-lightbox-close]");
+const photoBio = document.querySelector("[data-photo-bio]");
 
 let cubies = [];
 let isTurning = false;
@@ -185,6 +254,8 @@ const defaultScramble = [
   ["x", 0, -1],
   ["y", 1, -1],
 ];
+
+let cubeMoveHistory = [];
 
 function rotateVector([x, y, z], axis, direction) {
   if (axis === "x") return direction > 0 ? [x, -z, y] : [x, z, -y];
@@ -479,7 +550,7 @@ function turnAxisTransform(axis, degrees) {
   return `rotateZ(${degrees}deg)`;
 }
 
-async function turnLayer(axis, layer, direction, animate = true, duration = 360) {
+async function turnLayer(axis, layer, direction, animate = true, duration = 360, record = true) {
   if (!rubikCube || isTurning) return;
   isTurning = true;
 
@@ -491,6 +562,7 @@ async function turnLayer(axis, layer, direction, animate = true, duration = 360)
   );
 
   applyTurn(axis, layer, direction);
+  if (record) cubeMoveHistory.push([axis, layer, direction]);
   renderCube();
 
   if (animate) {
@@ -582,15 +654,30 @@ function turnFromControl(button, animate = true) {
 
 function resetCube() {
   cubies = createCubies();
+  cubeMoveHistory = [];
   renderCube();
 }
 
 function loadDefaultScramble() {
   cubies = createCubies();
+  cubeMoveHistory = [];
   defaultScramble.forEach(([axis, layer, direction]) => {
     applyTurn(axis, layer, direction);
+    cubeMoveHistory.push([axis, layer, direction]);
   });
   renderCube();
+}
+
+async function solveCube() {
+  if (isTurning || !cubeMoveHistory.length) return;
+  const moves = [...cubeMoveHistory].reverse();
+  cubeMoveHistory = [];
+
+  for (const [axis, layer, direction] of moves) {
+    await turnLayer(axis, layer, -direction, true, 520, false);
+  }
+
+  resetCube();
 }
 
 async function scrambleCube() {
@@ -657,7 +744,7 @@ puzzleControls.forEach((button) => {
 if (puzzleReset) {
   puzzleReset.addEventListener("click", () => {
     stopAmbientCube();
-    resetCube();
+    solveCube();
   });
 }
 
@@ -720,13 +807,17 @@ function selectProject(projectName) {
       return `<a href="${action.href}"${targetAttrs}>${action.label}</a>`;
     })
     .join("");
+  const bodyParagraphs = (Array.isArray(content.body) ? content.body : [content.body])
+    .map((paragraph) => `<p>${paragraph}</p>`)
+    .join("");
+
   panel.innerHTML = `
     <button class="panel-close" type="button" data-panel-close aria-label="Keep note pinned and close details">x</button>
     <p class="panel-kicker">${content.kicker}</p>
     <h3>${content.title}</h3>
-    <p>${content.body}</p>
+    <div class="project-links project-links-primary">${actionLinks}</div>
+    <div class="project-panel-body">${bodyParagraphs}</div>
     <div class="paper-actions">
-      <div class="project-links">${actionLinks}</div>
       <button class="crumple-button" type="button" data-crumple>crumple</button>
     </div>
   `;
@@ -1419,6 +1510,153 @@ slips.forEach((slip) => {
 
   slip.addEventListener("pointercancel", () => {
     slip.classList.remove("is-dragging");
+  });
+});
+
+
+let activePhotoIndex = null;
+let topPhotoZ = photoPrints.length;
+
+function closePhotoLightbox() {
+  if (!photoLightbox) return;
+
+  photoLightbox.hidden = true;
+  photoLightbox.classList.remove("is-opening");
+  photoPrints.forEach((print) => print.classList.remove("is-launching"));
+  document.body.classList.remove("is-viewing-photo");
+}
+
+function selectPhoto(index) {
+  if (!photoBio || !photoCopy[index] || !photoLightbox || !photoLightboxImage) return;
+
+  activePhotoIndex = index;
+  topPhotoZ += 1;
+
+  const selectedPrint = photoPrints.find((print) => Number(print.dataset.photoIndex) === index);
+
+  photoPrints.forEach((print) => {
+    const printIndex = Number(print.dataset.photoIndex);
+    print.classList.toggle("is-active", printIndex === index);
+    if (printIndex === index) {
+      print.style.setProperty("--photo-z", String(topPhotoZ));
+    }
+  });
+
+  const selectedImage = selectedPrint?.querySelector("img");
+  if (selectedImage) {
+    photoLightboxImage.src = selectedImage.dataset.fullSrc || selectedImage.currentSrc || selectedImage.src;
+    photoLightboxImage.alt = selectedImage.alt;
+  }
+
+  photoPrints.forEach((print) => print.classList.remove("is-launching"));
+  selectedPrint?.classList.add("is-launching");
+  window.setTimeout(() => selectedPrint?.classList.remove("is-launching"), 300);
+
+  const content = photoCopy[index];
+  photoBio.innerHTML = `
+    <p class="eyebrow">${content.kicker}</p>
+    <h3>${content.title}</h3>
+    <p>${content.body}</p>
+  `;
+
+  photoLightbox.hidden = false;
+  photoLightbox.classList.remove("is-opening");
+  void photoLightbox.offsetWidth;
+  photoLightbox.classList.add("is-opening");
+  document.body.classList.add("is-viewing-photo");
+}
+
+
+
+function scrollPhotoCarousel(direction) {
+  const photoStack = photoDesk?.querySelector(".photo-stack");
+  if (!photoStack) return;
+
+  if (!photoDesk.classList.contains("is-carousel")) {
+    photoDesk.classList.add("is-carousel");
+    if (photoModeToggle) {
+      photoModeToggle.textContent = "show scattered";
+      photoModeToggle.setAttribute("aria-pressed", "true");
+    }
+  }
+
+  const firstPrint = photoStack.querySelector(".photo-print");
+  const step = firstPrint ? firstPrint.getBoundingClientRect().width + 34 : photoStack.clientWidth * 0.72;
+  photoStack.scrollBy({ left: direction * step, behavior: "smooth" });
+}
+
+if (photoModeToggle && photoDesk) {
+  photoModeToggle.addEventListener("click", () => {
+    const isCarousel = photoDesk.classList.toggle("is-carousel");
+    photoModeToggle.textContent = isCarousel ? "show scattered" : "show carousel";
+    photoModeToggle.setAttribute("aria-pressed", String(isCarousel));
+  });
+}
+
+photoCarouselButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    scrollPhotoCarousel(button.dataset.photoCarousel === "next" ? 1 : -1);
+  });
+});
+
+if (photoLightbox) {
+  photoLightbox.addEventListener("click", (event) => {
+    if (event.target === photoLightbox) closePhotoLightbox();
+  });
+}
+
+if (photoLightboxClose) {
+  photoLightboxClose.addEventListener("click", closePhotoLightbox);
+}
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closePhotoLightbox();
+});
+
+photoPrints.forEach((print, order) => {
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let moved = false;
+
+  print.style.setProperty("--photo-z", String(photoPrints.length - order));
+
+  print.addEventListener("pointerdown", (event) => {
+    print.setPointerCapture(event.pointerId);
+    startX = event.clientX - currentX;
+    startY = event.clientY - currentY;
+    moved = false;
+    topPhotoZ += 1;
+    print.style.setProperty("--photo-z", String(topPhotoZ));
+    print.classList.add("is-dragging");
+  });
+
+  print.addEventListener("pointermove", (event) => {
+    if (!print.classList.contains("is-dragging")) return;
+
+    currentX = event.clientX - startX;
+    currentY = event.clientY - startY;
+    moved = Math.abs(currentX) + Math.abs(currentY) > 8;
+    print.style.setProperty("--drag-x", `${currentX}px`);
+    print.style.setProperty("--drag-y", `${currentY}px`);
+  });
+
+  print.addEventListener("pointerup", (event) => {
+    print.classList.remove("is-dragging");
+    print.releasePointerCapture(event.pointerId);
+
+    if (!moved) {
+      selectPhoto(Number(print.dataset.photoIndex));
+    }
+
+    window.setTimeout(() => {
+      moved = false;
+    }, 0);
+  });
+
+  print.addEventListener("pointercancel", () => {
+    print.classList.remove("is-dragging");
   });
 });
 
