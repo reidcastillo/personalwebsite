@@ -154,49 +154,59 @@ const sideNormals = {
 
 const photoCopy = [
   {
-    kicker: "01 / street study",
-    title: "Puebla sign",
-    body: "A black and white street frame built around signage, tree shadow, and the packed roof of a parked car. I like how the image feels observational, crowded, and still at the same time.",
+    kicker: "01",
+    title: "Steetside",
+    body: "Published in the 28th issue of Tea Literary & Arts Magazine.<br><br>Taken in Mexico City, Mexico on 35mm CineStill BwXX.<br><br>Developed By State Film Lab.",
   },
   {
-    kicker: "02 / live music",
-    title: "Blue spotlight",
-    body: "A concert frame caught in heavy blue light, with the performer centered under the beam and the crowd reaching into the foreground. The image holds onto the feeling of being inside the room instead of standing outside it.",
+    kicker: "02",
+    title: "Sermon",
+    body: "Hozier at the Kia Center during the Unreal Unearth Tour.<br><br>Taken on 5/8/2024 with 35mm CineStill 800t film.<br><br>Developed by State Film Lab.",
   },
   {
-    kicker: "03 / stage blur",
-    title: "Electric silhouette",
-    body: "A darker performance image where the bright blue shape and the singer compete for attention. I like the looseness of the frame because it feels closer to memory than documentation.",
+    kicker: "03",
+    title: "Big Stepper",
+    body: "Baby Keem at Amalie Arena during the Mr.Morale and the Big Steppers Tour.<br><br>Taken on 7/27/22 with 35mm CineStill 800t film.<br><br>Developed by Creative Photo and Digital Imaging.",
   },
   {
-    kicker: "04 / gold haze",
-    title: "Close to the rail",
-    body: "A warm concert frame where the spotlight, phones, and crowd all fold into the performer. The grain and yellow wash make it feel immediate, loud, and close.",
+    kicker: "04",
+    title: "Flatiron",
+    body: "The Flatiron Building photographed in New York, NY.<br><br>35mm CineStill BwXX film.<br><br>Developed at State Film Lab.",
   },
   {
-    kicker: "05 / cyan wash",
-    title: "Alone in blue",
-    body: "A performer stands inside a huge cyan beam while the stage melts into light around him. I like the quiet center of the frame against all that saturated color.",
+    kicker: "05",
+    title: "MR. MORALE",
+    body: "Kendrick Lamar at Amalie Arena during the Mr.Morale and the Big Steppers Tour.<br><br>Taken on 7/27/22 with 35mm CineStill 800t film.<br><br>Developed by Creative Photo and Digital Imaging.",
   },
   {
-    kicker: "06 / interior study",
-    title: "Window walk",
-    body: "A black and white interior image built on silhouettes, long shadows, and a bright opening at the end of the room. It feels like a pause between movement and exit.",
+    kicker: "06",
+    title: "Gemini",
+    body: "Steve Lacy during the Gemini Rights Tour.<br><br>Taken at the Tabernacle on 11/20/25 with 35mm CineStill 800t Film.<br><br>Developed by State Film Lab.",
   },
   {
-    kicker: "07 / arena light",
-    title: "White screen",
-    body: "A wide concert scene held together by the glowing rectangle above the performer. The scale of the crowd becomes part of the composition without taking over the subject.",
+    kicker: "07",
+    title: "N95",
+    body: "Kendrick Lamar at Amalie Arena during the Mr.Morale and the Big Steppers Tour.<br><br>Taken on 7/27/22 with 35mm CineStill 800t film.<br><br>Developed by Creative Photo and Digital Imaging.",
   },
   {
-    kicker: "08 / motion trace",
-    title: "Blue echo",
-    body: "A low-light performance image where motion blur turns the singer into several overlapping gestures. I like how the frame feels unstable in a way that matches live music.",
+    kicker: "08",
+    title: "Spotlight",
+    body: "Published in the 27th edition of Tea Literary & Arts Magazine.<br><br>Taken at the Whitney in New York, NY in early 2024 with 35mm CineStill BwXX film.<br><br>Developed By State Film Lab.",
   },
   {
-    kicker: "09 / stage fall",
-    title: "Paper rain",
-    body: "A distant stage image with paper suspended in a cone of warm light. The performer feels tiny under the scene, which makes the moment feel more theatrical.",
+    kicker: "09",
+    title: "HIGHER!",
+    body: "Dijon during the Baby Tour.<br><br>Taken at the Tabernacle on 11/20/25 with 35mm CineStill 800t Film.<br><br>Developed by State Film Lab.",
+  },
+  {
+    kicker: "10",
+    title: "Muscle",
+    body: "Published in the 27th issue of Tea Literary & Arts Magazine.<br><br>Taken in Gainesville,FL on 35mm CineStill BwXX.<br><br>Developed By State Film Lab.",
+  },
+  {
+    kicker: "11",
+    title: "Shooting Star",
+    body: "Mitski during her \"This Land is Inhospitable and So Are We\" Tour.<br><br>Taken on 1/29/24 at the Walt Disney Theater with CineStill 400D.<br><br>Developed By On a Roll Film Lab.",
   },
 ];
 
@@ -1519,6 +1529,7 @@ let topPhotoZ = photoPrints.length;
 let lastPhotoShakeAt = 0;
 let lastMotionMagnitude = null;
 let motionPermissionAsked = false;
+const mobilePhotoQuery = window.matchMedia("(max-width: 880px), (hover: none), (pointer: coarse)");
 
 function closePhotoLightbox() {
   if (!photoLightbox) return;
@@ -1590,6 +1601,11 @@ function scrollPhotoCarousel(direction) {
 
 if (photoModeToggle && photoDesk) {
   photoModeToggle.addEventListener("click", () => {
+    if (mobilePhotoQuery.matches) {
+      syncMobilePhotoMode();
+      return;
+    }
+
     const isCarousel = photoDesk.classList.toggle("is-carousel");
     photoModeToggle.textContent = isCarousel ? "show scattered" : "show carousel";
     photoModeToggle.setAttribute("aria-pressed", String(isCarousel));
@@ -1606,34 +1622,47 @@ function randomBetween(min, max) {
   return min + Math.random() * (max - min);
 }
 
-function jumblePhotoPile() {
-  if (!photoDesk || !photoPrints.length || !window.matchMedia("(hover: none), (pointer: coarse), (max-width: 880px)").matches) return;
-  if (photoLightbox && !photoLightbox.hidden) return;
+function syncMobilePhotoMode() {
+  if (!photoDesk) return;
 
-  if (photoDesk.classList.contains("is-carousel")) {
-    photoDesk.classList.remove("is-carousel");
+  if (mobilePhotoQuery.matches) {
+    photoDesk.classList.add("is-carousel");
     if (photoModeToggle) {
-      photoModeToggle.textContent = "show carousel";
-      photoModeToggle.setAttribute("aria-pressed", "false");
+      photoModeToggle.textContent = "show scattered";
+      photoModeToggle.setAttribute("aria-pressed", "true");
     }
   }
+}
 
-  const spreadX = Math.min(window.innerWidth * 0.44, 520);
-  const spreadY = Math.min(window.innerHeight * 0.22, 250);
+function jumblePhotoPile() {
+  if (!photoDesk || !photoPrints.length || !mobilePhotoQuery.matches) return;
+  if (photoLightbox && !photoLightbox.hidden) return;
+
+  photoDesk.classList.add("is-carousel");
+  if (photoModeToggle) {
+    photoModeToggle.textContent = "show scattered";
+    photoModeToggle.setAttribute("aria-pressed", "true");
+  }
+
+  const shuffled = [...photoPrints]
+    .map((print) => ({ print, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort);
+
   topPhotoZ += photoPrints.length;
-
-  photoPrints.forEach((print, index) => {
-    const x = randomBetween(-spreadX, spreadX);
-    const y = randomBetween(-spreadY, spreadY);
-    const r = randomBetween(-13, 13);
-    print.style.setProperty("--photo-x", `${x.toFixed(0)}px`);
-    print.style.setProperty("--photo-y", `${y.toFixed(0)}px`);
+  shuffled.forEach(({ print }, index) => {
+    const r = randomBetween(-4, 4);
+    print.style.order = String(index);
     print.style.setProperty("--photo-r", `${r.toFixed(1)}deg`);
     print.style.setProperty("--drag-x", "0px");
     print.style.setProperty("--drag-y", "0px");
     print.style.setProperty("--photo-z", String(topPhotoZ - index));
     print.classList.remove("is-active");
   });
+
+  const photoStack = photoDesk.querySelector(".photo-stack");
+  if (photoStack) {
+    photoStack.scrollTo({ left: Math.max(0, randomBetween(0, photoStack.scrollWidth - photoStack.clientWidth)), behavior: "smooth" });
+  }
 
   photoDesk.classList.remove("is-shake-jumbling");
   void photoDesk.offsetWidth;
@@ -1675,6 +1704,8 @@ async function enablePhotoMotion() {
 }
 
 if (photoDesk) {
+  syncMobilePhotoMode();
+  mobilePhotoQuery.addEventListener?.("change", syncMobilePhotoMode);
   enablePhotoMotion();
   photoDesk.addEventListener("pointerdown", enablePhotoMotion, { once: true });
   photoDesk.addEventListener("touchstart", enablePhotoMotion, { once: true, passive: true });
