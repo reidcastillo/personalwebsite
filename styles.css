@@ -1214,8 +1214,8 @@ h1 {
 .photo-lightbox-frame img {
   border: 0;
   display: block;
-  max-height: min(80vh, 900px);
-  max-width: min(86vw, 980px);
+  max-height: min(68vh, 760px);
+  max-width: min(82vw, 900px);
   object-fit: contain;
 }
 
@@ -1631,7 +1631,7 @@ h1 {
   }
 
   .photo-lightbox-frame img {
-    max-height: 66vh;
+    max-height: 58vh;
     max-width: 88vw;
   }
 
