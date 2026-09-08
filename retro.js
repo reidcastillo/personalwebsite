@@ -8,7 +8,9 @@
   document.body.prepend(toggle);
   const navigation = document.querySelector('.site-nav');
   function positionRetroToggle() {
-    root.style.setProperty('--mobile-retro-top', `${navigation.offsetTop + navigation.offsetHeight + 10}px`);
+    const navigationRect = navigation.getBoundingClientRect();
+    root.style.setProperty('--mobile-retro-top', `${navigationRect.bottom + 10}px`);
+    root.style.setProperty('--mobile-retro-right', `${window.innerWidth - navigationRect.right}px`);
   }
   function syncRetroVisibility() {
     toggle.classList.toggle('is-hidden', navigation.classList.contains('is-hidden'));
