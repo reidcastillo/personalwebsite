@@ -1462,6 +1462,18 @@ async function crumpleProject() {
 }
 
 if (panel) {
+  document.addEventListener("click", (event) => {
+    if (!panel.classList.contains("is-idle") && !panel.contains(event.target) && !isCrumplingPaper) {
+      closeProjectPanel();
+    }
+  }, true);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.classList.contains("is-idle") && !isCrumplingPaper) {
+      closeProjectPanel();
+    }
+  });
+
   panel.addEventListener("click", (event) => {
     if (event.target.closest("[data-panel-close]")) {
       closeProjectPanel();

@@ -1936,8 +1936,14 @@ h1 {
   padding-right: 10px;
 }
 [data-project-panel] .project-panel-body p {
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
-  line-height: 1.4;
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", Arial, sans-serif;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.5;
+}
+[data-project-panel] .project-panel-body {
+  gap: 18px;
 }
 @media (max-width: 600px), (max-height: 500px) {
   [data-project-panel] {
