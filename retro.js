@@ -5,7 +5,7 @@
   toggle.type = 'button';
   toggle.textContent = 'Retro';
   toggle.title = 'Toggle Windows 95 theme';
-  document.querySelector('[data-theme-toggle]').before(toggle);
+  document.body.prepend(toggle);
   // Tiny bitmap icons retain hard pixel edges when enlarged.
   const colors = { k: '#000', w: '#fff', g: '#c0c0c0', b: '#000080', t: '#00ffff', y: '#ffff00' };
   const patterns = {
@@ -83,10 +83,6 @@
   function setRetro(enabled) {
     root.classList.toggle('retro',enabled);
     if (enabled) document.querySelectorAll('.retro-titlebar').forEach(bar => { bar.hidden = false; });
-    const themeButton = document.querySelector('[data-theme-toggle]');
-    themeButton.disabled = enabled;
-    themeButton.title = enabled ? 'Dark mode is unavailable while Retro is active' : '';
-    themeButton.setAttribute('aria-label', enabled ? 'Dark mode unavailable in Retro mode' : (root.dataset.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'));
     updatePreviews(enabled);
     toggle.setAttribute('aria-pressed',String(enabled));
     toggle.setAttribute('aria-label',enabled ? 'Turn off Retro mode' : 'Turn on Retro mode');

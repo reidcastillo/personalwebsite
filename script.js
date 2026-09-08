@@ -1,13 +1,16 @@
 const projectCopy = {
   crossword: {
-    kicker: "05 / Personal Project · 2026",
-    title: "Crossword Duel",
+    kicker: "05 / Mini Duel · Product + Full Stack",
+    title: "Mini Duel",
     body: [
-      "I built Crossword Duel, a head-to-head crossword game that turns a quick 5×5 puzzle into a race against another player.",
-      "Players can enter a public match, play with a friend, or choose a robot opponent. Both players race the same grid, with opponent progress visible as they solve.",
-      "The goal is simple: finish first with every letter correct. No hints, just the puzzle and the clock.",
+      "Mini Duel turns a daily crossword into a head-to-head race. Players solve the same grid and track their opponent’s progress. The first to finish every square correctly wins.",
+      "Play through public matchmaking or invite a friend with a shared room link and keep the rematches going. Robot opponents offer selectable difficulty. The game includes 500 puzzles, customizable themes and a mobile-friendly board.",
+      "I built the interface with Next.js, React and TypeScript. PostgreSQL powers matchmaking, game state and friend rankings. I developed crossword generation and validation alongside synchronized race timing and responsive controls to make a familiar solo puzzle competitive and social.",
     ],
-    actions: [{ label: "play game", href: "https://miniduel.vercel.app/" }],
+    actions: [
+      { label: "play game", href: "https://miniduel.vercel.app/" },
+      { label: "view repository", href: "https://github.com/reidcastillo/mini-rival-" },
+    ],
   },
   launch: {
     kicker: "01 / Software Engineering Internship · Summer 2025",
@@ -238,13 +241,14 @@ const cup = document.querySelector("[data-cup]");
 const wastebin = document.querySelector("[data-wastebin]");
 const stage = document.querySelector("[data-stage]");
 const panel = document.querySelector("[data-project-panel]");
+// Keep the fixed details window outside the stage’s 3D containing block.
+if (panel) document.body.append(panel);
 const slips = [...document.querySelectorAll(".project-slip")];
 const repinBoard = document.querySelector("[data-repin-board]");
 const emailButton = document.querySelector("[data-copy-email]");
 const contactForm = document.querySelector("[data-contact-form]");
 const formStatus = document.querySelector("[data-form-status]");
 const aboutGator = document.querySelector(".about-gator");
-const themeToggle = document.querySelector("[data-theme-toggle]");
 const siteNav = document.querySelector(".site-nav");
 const photoPrints = [...document.querySelectorAll(".photo-print")];
 const photoDesk = document.querySelector("[data-photo-desk]");
@@ -836,7 +840,7 @@ function selectProject(projectName) {
     <p class="panel-kicker">${content.kicker}</p>
     <h3>${content.title}</h3>
     <div class="project-links project-links-primary">${actionLinks}</div>
-    <div class="project-panel-body">${bodyParagraphs}</div>
+    <div class="project-panel-body" tabindex="0" role="region" aria-label="Project description">${bodyParagraphs}</div>
     <div class="paper-actions">
       <button class="crumple-button" type="button" data-crumple>crumple</button>
     </div>
@@ -1807,22 +1811,6 @@ if (siteNav) {
       ticking = true;
     }
   }, { passive: true });
-}
-
-if (themeToggle) {
-  const setTheme = (theme) => {
-    const isDark = theme === "dark";
-    document.documentElement.dataset.theme = isDark ? "dark" : "light";
-    themeToggle.setAttribute("aria-pressed", String(isDark));
-    themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
-    localStorage.setItem("site-theme", isDark ? "dark" : "light");
-  };
-
-  setTheme(localStorage.getItem("site-theme") === "dark" ? "dark" : "light");
-
-  themeToggle.addEventListener("click", () => {
-    setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
-  });
 }
 
 if (emailButton) {

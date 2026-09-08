@@ -1900,3 +1900,52 @@ h1 {
  .project-slip[data-project="system"] {--x:70px !important;--y:0px !important}
  .project-slip[data-project="crossword"] {--x:0px !important;--y:165px !important}
 }
+
+/* Keep project details inside the viewport with a nearly square desktop window. */
+[data-project-panel] {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  width: min(760px, calc(100vw - 40px));
+  height: min(720px, calc(100dvh - 96px));
+  min-height: 0;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 32px);
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+[data-project-panel].is-idle {
+  transform: translate(-50%, -48%) scale(0.96);
+}
+[data-project-panel] .panel-kicker {
+  padding-right: 32px;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+[data-project-panel] h3 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+[data-project-panel] .project-panel-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  align-content: start;
+  padding-right: 10px;
+}
+[data-project-panel] .project-panel-body p {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.4;
+}
+@media (max-width: 600px), (max-height: 500px) {
+  [data-project-panel] {
+    gap: 10px;
+    padding: 18px;
+  }
+  [data-project-panel] .project-links-primary a {
+    font-size: 1rem;
+    padding: 8px 10px;
+  }
+}
