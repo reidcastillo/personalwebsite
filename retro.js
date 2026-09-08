@@ -6,6 +6,18 @@
   toggle.textContent = 'Retro';
   toggle.title = 'Toggle Windows 95 theme';
   document.body.prepend(toggle);
+  const navigation = document.querySelector('.site-nav');
+  function positionRetroToggle() {
+    root.style.setProperty('--mobile-retro-top', `${navigation.offsetTop + navigation.offsetHeight + 10}px`);
+  }
+  function syncRetroVisibility() {
+    toggle.classList.toggle('is-hidden', navigation.classList.contains('is-hidden'));
+  }
+  new ResizeObserver(positionRetroToggle).observe(navigation);
+  new MutationObserver(syncRetroVisibility).observe(navigation, { attributes: true, attributeFilter: ['class'] });
+  window.addEventListener('resize', positionRetroToggle);
+  positionRetroToggle();
+  syncRetroVisibility();
   // Tiny bitmap icons retain hard pixel edges when enlarged.
   const colors = { k: '#000', w: '#fff', g: '#c0c0c0', b: '#000080', t: '#00ffff', y: '#ffff00' };
   const patterns = {
@@ -26,7 +38,7 @@
     return img;
   }
   toggle.prepend(icon('computer'));
-  [['.hero','Welcome to Reid.exe','computer'],['.about','About Reid','computer'],['.projects','My Projects','folder'],['.tech-stack','System Properties','computer'],['.photography','My Pictures','photo'],['.contact','Outlook Express','mail']].forEach(([selector,title,symbol]) => {
+  [['.hero','Welcome to Reid.exe','computer'],['.about','reid.exe','computer'],['.projects','My Projects','folder'],['.tech-stack','System Properties','computer'],['.photography','My Pictures','photo'],['.contact','Outlook Express','mail']].forEach(([selector,title,symbol]) => {
     const bar = document.createElement('div');
     bar.className = 'retro-titlebar';
     bar.append(icon(symbol));

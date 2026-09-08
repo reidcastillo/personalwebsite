@@ -1955,3 +1955,19 @@ h1 {
     padding: 8px 10px;
   }
 }
+
+/* A black thumb keeps project-description scrolling consistent in both themes. */
+[data-project-panel] .project-panel-body {
+  scrollbar-color: #000 transparent;
+  scrollbar-width: thin;
+}
+[data-project-panel] .project-panel-body::-webkit-scrollbar {
+  width: 8px;
+}
+[data-project-panel] .project-panel-body::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 0;
+}
+[data-project-panel] .project-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}

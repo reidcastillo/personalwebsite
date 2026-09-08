@@ -4,7 +4,20 @@
 }
 .retro-icon {width:24px;height:24px;image-rendering:pixelated;flex-shrink:0}
 .retro-titlebar,.retro-taskbar,.site-nav .retro-icon {display:none}
-@media(max-width:960px) {.site-nav{top:62px}main{padding-top:112px}.retro-toggle{right:8px}}
+@media(max-width:960px) {
+ .site-nav {top:14px}
+ main {padding-top:112px}
+ .retro-toggle {top:var(--mobile-retro-top, 64px);right:8px}
+}
+.retro-toggle {
+ transition:opacity 180ms ease, transform 180ms ease, visibility 180ms;
+}
+.retro-toggle.is-hidden {
+ opacity:0;
+ visibility:hidden;
+ pointer-events:none;
+ transform:translateY(-130px);
+}
 html:root.retro {--paper:#008080;--ink:#000;--muted:#333;--line:#000;--nav-bg:#c0c0c0;--hot:#000080}
 :root.retro body {background:#008080;font-family:'Courier New',monospace}
 :root.retro body::before,:root.retro .grain {display:none}
