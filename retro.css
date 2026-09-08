@@ -1,0 +1,224 @@
+.retro-toggle {
+ position:fixed;top:14px;right:66px;z-index:40;display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;
+ background:var(--paper);color:var(--ink);border:2px solid var(--line);box-shadow:4px 4px 0 var(--line);font-size:14px;font-weight:700;
+}
+.retro-icon {width:24px;height:24px;image-rendering:pixelated;flex-shrink:0}
+.retro-titlebar,.retro-taskbar,.site-nav .retro-icon {display:none}
+@media(max-width:960px) {.site-nav{top:62px}main{padding-top:112px}.retro-toggle{right:60px}}
+html:root.retro {--paper:#008080;--ink:#000;--muted:#333;--line:#000;--nav-bg:#c0c0c0;--hot:#000080}
+:root.retro body {background:#008080;font-family:'Courier New',monospace}
+:root.retro body::before,:root.retro .grain {display:none}
+:root.retro :is(h1,h2,h3,p,a,button,input,textarea,small,span) {font-family:'Courier New',monospace;letter-spacing:0}
+:root.retro img {image-rendering:pixelated}
+:root.retro main {padding-bottom:100px}
+:root.retro main>section {position:relative;padding-top:64px;border-top:0}
+:root.retro .retro-titlebar {
+ display:flex;align-items:center;gap:8px;position:absolute;top:0;left:0;right:0;height:32px;background:#000080;color:#fff;padding:3px 6px;
+ font:bold 14px 'Courier New',monospace;border:2px solid #c0c0c0;box-shadow:-1px -1px #fff,1px 1px #000;
+}
+:root.retro .hero-copy {transform:none}
+:root.retro h1 {font-size:46px;line-height:1.1;max-width:16ch;text-shadow:2px 2px #c0c0c0}
+:root.retro h2 {font-size:36px;line-height:1.15;overflow-wrap:anywhere}
+:root.retro .eyebrow {font-size:16px}
+:root.retro :is(.about-copy p,.section-title>p,.contact>p) {font-size:18px;line-height:1.6}
+:root.retro .site-nav {background:#c0c0c0;border:2px outset #fff;box-shadow:1px 1px #000;backdrop-filter:none;gap:12px;width:auto;max-width:calc(100% - 32px)}
+:root.retro .site-nav a {display:flex;align-items:center;gap:5px;color:#000;font-size:12px}
+:root.retro .site-nav .retro-icon {display:block;width:20px;height:20px}
+:root.retro :is(.retro-toggle,.theme-notch,.hero-links a,.contact-links a,.contact-form-submit button,.photo-mode-toggle,.project-panel a,.repin-board) {
+ background:#c0c0c0;color:#000;border:2px solid;border-color:#fff #000 #000 #fff;border-radius:0;
+ box-shadow:inset -1px -1px #808080,inset 1px 1px #dfdfdf;text-decoration:none;
+}
+:root.retro :is(.retro-toggle,.hero-links a,.contact-links a,.photo-mode-toggle):active,
+:root.retro .retro-toggle[aria-pressed='true'] {border-color:#000 #fff #fff #000;box-shadow:inset 1px 1px #808080}
+:root.retro :is(a,button,input,textarea):focus-visible {outline:1px dotted currentColor;outline-offset:3px}
+:root.retro .theme-notch span {background:#000}
+:root.retro .theme-notch span::after {background:#c0c0c0}
+:root.retro .bulletin-board {background:#c0c0c0;border:6px ridge #dfdfdf;box-shadow:2px 2px #000}
+:root.retro .project-slip {background:#c0c0c0;border:2px outset #fff;box-shadow:3px 3px #808080;color:#000}
+:root.retro .project-slip::before {background:#000080;border-radius:0}
+:root.retro .project-panel {background:#c0c0c0;color:#000;border:3px outset #fff;box-shadow:2px 2px #000}
+:root.retro .project-panel :is(h3,p,.panel-kicker) {color:#000}
+:root.retro .notes {background:#c0c0c0;transform:none;border:3px outset #fff;box-shadow:2px 2px #000}
+:root.retro .notes p {font-size:18px;line-height:1.6;padding:10px}
+:root.retro .photo-print {background:#c0c0c0;border:3px outset #fff;box-shadow:5px 5px #003f3f}
+:root.retro .photo-print::after {font-family:'Courier New',monospace;font-size:12px}
+:root.retro .photo-carousel-arrow {color:#fff}
+:root.retro .photo-lightbox {background:rgba(0,0,0,.94)}
+:root.retro .photo-bio :is(h3,p,span) {color:#fff}
+:root.retro .contact-form {background:#c0c0c0;border:3px outset #fff;box-shadow:2px 2px #000}
+:root.retro .contact-form::before {display:none}
+:root.retro :is(.contact-form-intro,.contact-form-fields) {background:#c0c0c0;color:#000}
+:root.retro .contact-form :is(input,textarea) {background:#fff;color:#000;border:2px inset #dfdfdf;box-shadow:none}
+:root.retro .retro-taskbar {display:flex;align-items:center;gap:8px;position:fixed;bottom:0;left:0;right:0;z-index:45;padding:4px;background:#c0c0c0;border-top:2px solid #fff;color:#000;font-size:13px}
+.retro-taskbar a {display:flex;align-items:center;gap:5px;font-weight:bold;text-decoration:none;padding:1px 6px;border:2px outset #fff}
+.retro-taskbar>span {border:2px inset #fff;padding:6px 16px}
+.retro-taskbar time {margin-left:auto;border:2px inset #fff;padding:6px}
+@media(max-width:600px) {
+ :root.retro h1{font-size:32px}:root.retro h2{font-size:27px}
+ :root.retro .site-nav{left:8px;width:calc(100% - 16px);max-width:none;padding:7px 4px;gap:6px;transform:none}
+ :root.retro .site-nav a{font-size:10px;flex-direction:column;gap:3px}
+ :root.retro .site-nav a[href='#photography']{font-size:10px}
+ :root.retro main{padding-top:140px}:root.retro .retro-titlebar{font-size:12px}
+ :root.retro .hero-links a{min-width:0;font-size:18px}
+}
+
+/* Retro desktop refinements. */
+html.retro {overflow-x:clip}
+.retro-folder {display:none}
+:root.retro .retro-folder {display:block;width:88px;height:88px;justify-self:center;grid-row:1}
+:root.retro .project-slip {
+ background:transparent !important;border:0;box-shadow:none;min-height:148px;
+ padding:8px 4px;gap:6px;font-size:16px;line-height:1.3;text-align:center;
+ grid-template-rows:88px auto auto;--r:0deg;
+}
+:root.retro .project-slip::before,:root.retro .project-slip::after {display:none}
+:root.retro .project-slip>span {display:none}
+:root.retro .project-slip small {font-size:12px;margin:0}
+:root.retro .project-slip:hover,:root.retro .project-slip:focus-visible,:root.retro .project-slip.is-active {
+ background:#000080 !important;color:#fff;box-shadow:none;
+}
+:root.retro .cubie-side {image-rendering:pixelated;border-radius:0}
+:root.retro .site-nav {left:50%;transform:translateX(-50%);justify-content:center;width:560px;max-width:calc(100% - 32px)}
+:root.retro .site-nav.is-hidden {transform:translate(-50%,-130px)}
+.retro-cursor-trail {position:fixed;inset:0;pointer-events:none;z-index:10000;overflow:hidden}
+.retro-cursor-trail i {position:absolute;top:0;left:0;width:6px;height:6px;border-radius:50%;opacity:0;pointer-events:none}
+@media(hover:hover) and (pointer:fine) {
+ :root.retro,:root.retro * {cursor:var(--retro-cursor)}
+}
+@media(max-width:600px) {
+ :root.retro .site-nav {width:calc(100% - 16px);max-width:none}
+ :root.retro .retro-folder {width:72px;height:72px}
+ :root.retro .project-slip {grid-template-rows:72px auto auto;min-height:132px;font-size:14px}
+}
+@media(prefers-reduced-motion:reduce) {.retro-cursor-trail{display:none}}
+
+/* Keep the desktop and section headings teal; only the information is framed. */
+:root.retro .tech-stack {background:transparent;border:0;box-shadow:none}
+:root.retro .tech-stack>p {
+ background:#c0c0c0;color:#000;border:2px outset #fff;box-shadow:2px 2px #000;
+ transform:none;justify-self:stretch;max-width:none;width:100%;padding:18px 20px;
+}
+:root.retro .hero {align-items:center;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
+:root.retro .hero-copy {align-self:center;justify-self:center;text-align:center;transform:none;width:100%}
+:root.retro .hero-copy h1 {margin-inline:auto}
+:root.retro .hero-links {justify-content:center}
+:root.retro .hero-cube {transform:none;margin:0;align-self:center;justify-self:center}
+:root.retro .rubik-shell::before {display:none}
+:root.retro .theme-notch:disabled {cursor:not-allowed}
+:root.retro .theme-notch:disabled span {opacity:.25}
+:root.retro .theme-notch:disabled::before {
+ content:"";position:absolute;width:23px;height:23px;border:2px solid #b00000;border-radius:50%;z-index:1;
+}
+:root.retro .theme-notch:disabled::after {
+ content:"";position:absolute;width:25px;height:2px;background:#b00000;transform:rotate(-45deg);z-index:2;
+}
+:root.retro .paper-ball {
+ background:var(--retro-paper-ball) center/100% 100% no-repeat;clip-path:none;
+ image-rendering:pixelated;filter:none;--paper-color:#ffff00 !important;
+}
+:root.retro .paper-ball::before,:root.retro .paper-ball::after {display:none}
+@media(max-width:880px) {
+ :root.retro .hero {grid-template-columns:minmax(0,1fr)}
+ :root.retro .hero-copy {max-width:560px}
+}
+
+@font-face {
+ font-family:'Retro Terminal';src:url('assets/retro-vt323.ttf') format('truetype');
+ font-weight:400;font-style:normal;font-display:swap;
+}
+:root.retro .cube-actions button,
+:root.retro .cube-actions button:hover,
+:root.retro .cube-actions button:focus-visible {
+ background:#c0c0c0;color:#000;border:2px solid;border-color:#fff #000 #000 #fff;
+ box-shadow:inset -1px -1px #808080,inset 1px 1px #dfdfdf;
+ font:24px/1 'Retro Terminal',monospace;padding:8px 14px;min-width:94px;
+ text-decoration:none;transform:none;opacity:1;
+}
+:root.retro .cube-actions button:active {
+ border-color:#000 #fff #fff #000;box-shadow:inset 1px 1px #808080;
+}
+:root.retro .retro-cursor-trail i {border-radius:0;width:6px;height:6px}
+:root.retro :is(.about-copy p,.section-title>p,.site-thanks p) {
+ color:#fff;font-family:'Retro Terminal',monospace;font-size:26px;line-height:1.35;
+}
+:root.retro .contact-form {gap:36px}
+:root.retro .contact-form-intro {align-content:start;min-width:0;padding-top:4px;gap:18px}
+:root.retro .contact-form-intro h3 {
+ color:#000;font-family:Tahoma,'MS Sans Serif',Arial,sans-serif;
+ font-size:26px;font-weight:700;line-height:1.3;overflow-wrap:break-word;
+}
+:root.retro .contact-form-intro p,
+:root.retro .contact-form label span,
+:root.retro .contact-form input,
+:root.retro .contact-form textarea,
+:root.retro .contact-form-submit button {
+ color:#000;font-family:'Retro Terminal',monospace;font-size:24px;line-height:1.25;
+}
+:root.retro .contact .form-status {font:20px/1.3 'Retro Terminal',monospace;color:#000}
+:root.retro .contact-form-intro .eyebrow {font-size:20px}
+@media(max-width:600px) {
+ :root.retro .contact-form-intro h3 {font-size:22px}
+ :root.retro :is(.about-copy p,.section-title>p,.site-thanks p) {font-size:24px}
+}
+
+:root.retro .wastebin-body {
+ background:var(--retro-bin-art) center/100% 100% no-repeat;
+ image-rendering:pixelated;clip-path:none;border:0;filter:none;
+}
+:root.retro .wastebin-body::after {display:none}
+:root.retro .wastebin-rim {
+ background:#c0c0c0;border:3px solid;border-color:#fff #202020 #202020 #fff;
+ box-shadow:inset 0 -3px #808080;border-radius:0;
+ clip-path:polygon(3% 0,97% 0,97% 20%,100% 20%,100% 80%,97% 80%,97% 100%,3% 100%,3% 80%,0 80%,0 20%,3% 20%);
+}
+
+.retro-smiley {display:none}
+:root.retro .retro-smiley {
+ display:block;width:224px;max-width:100%;height:auto;aspect-ratio:1;
+ image-rendering:pixelated;justify-self:center;margin-top:36px;align-self:center;
+}
+:root.retro .photo-bio p,
+:root.retro .photo-bio .eyebrow {
+ font-family:'Retro Terminal',monospace;font-size:25px;line-height:1.3;color:#fff;
+}
+:root.retro .photo-bio h3 {
+ font-family:'Retro Terminal',monospace;font-size:36px;line-height:1.1;color:#fff;font-weight:400;
+}
+@media(max-width:600px) {
+ :root.retro .retro-smiley {width:160px;margin-top:16px}
+ :root.retro .photo-bio p {font-size:23px}
+ :root.retro .photo-bio h3 {font-size:32px}
+}
+
+:root.retro .retro-titlebar[hidden] {display:none}
+:root.retro .retro-header-close {
+ margin-left:auto;flex:0 0 22px;width:22px;height:22px;display:grid;place-items:center;
+ padding:0;background:#c0c0c0;color:#000;border:2px solid;border-color:#fff #000 #000 #fff;
+ font:bold 16px/1 Arial,sans-serif;box-shadow:inset -1px -1px #808080;
+}
+:root.retro .retro-header-close:active {border-color:#000 #fff #fff #000;box-shadow:none}
+
+:root.retro .retro-welcome-note {font-size:12px;font-weight:400;margin-left:12px}
+:root.retro .hero>.retro-titlebar {height:auto;min-height:32px;flex-wrap:wrap;padding-right:34px}
+:root.retro .hero>.retro-titlebar .retro-header-close {position:absolute;right:4px;top:3px}
+@media(max-width:800px) {
+ :root.retro .retro-welcome-note {flex-basis:100%;margin:0;line-height:1.35;padding:2px 0 4px}
+ :root.retro main>.hero {padding-top:100px}
+}
+
+:root.retro .retro-welcome-note {margin-left:0;font-weight:700}
+@media(min-width:801px) {
+ :root.retro .bulletin-board .project-slip {
+  --x:0px !important;--y:0px !important;--r:0deg !important;
+  width:16%;max-width:140px;height:172px;min-height:172px;
+  grid-template-rows:80px 44px 16px;gap:6px;padding:8px 3px;
+  font-size:14px;line-height:1.3;
+ }
+ :root.retro .project-slip .retro-folder {width:80px;height:80px}
+ :root.retro .project-slip[data-project="launch"] {left:10%}
+ :root.retro .project-slip[data-project="tool"] {left:30%}
+ :root.retro .project-slip[data-project="archive"] {left:50%}
+ :root.retro .project-slip[data-project="system"] {left:70%}
+ :root.retro .project-slip[data-project="crossword"] {left:90%}
+ :root.retro .project-slip small {align-self:end}
+}

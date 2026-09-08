@@ -1882,3 +1882,21 @@ h1 {
     background: #fffef9;
   }
 }
+
+/* Five projects: one row on desktop, three rows on narrow screens. */
+.bulletin-board {width:min(96%,920px)}
+.project-slip[data-project="launch"] {--x:-320px !important}
+.project-slip[data-project="tool"] {--x:-160px !important}
+.project-slip[data-project="archive"] {--x:0px !important}
+.project-slip[data-project="system"] {--x:160px !important}
+.project-slip[data-project="crossword"] {--x:320px !important;font-size:1.1rem;gap:8px}
+@media(max-width:800px) {
+ .bulletin-board {height:510px;width:calc(100% - 12px)}
+ .cup-wrap {min-height:810px}
+ .project-slip {width:108px;min-height:124px}
+ .project-slip[data-project="launch"] {--x:-70px !important;--y:-165px !important}
+ .project-slip[data-project="tool"] {--x:70px !important;--y:-165px !important}
+ .project-slip[data-project="archive"] {--x:-70px !important;--y:0px !important}
+ .project-slip[data-project="system"] {--x:70px !important;--y:0px !important}
+ .project-slip[data-project="crossword"] {--x:0px !important;--y:165px !important}
+}

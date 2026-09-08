@@ -1,4 +1,14 @@
 const projectCopy = {
+  crossword: {
+    kicker: "05 / Personal Project · 2026",
+    title: "Crossword Duel",
+    body: [
+      "I built Crossword Duel, a head-to-head crossword game that turns a quick 5×5 puzzle into a race against another player.",
+      "Players can enter a public match, play with a friend, or choose a robot opponent. Both players race the same grid, with opponent progress visible as they solve.",
+      "The goal is simple: finish first with every letter correct. No hints, just the puzzle and the clock.",
+    ],
+    actions: [{ label: "play game", href: "https://miniduel.vercel.app/" }],
+  },
   launch: {
     kicker: "01 / Software Engineering Internship · Summer 2025",
     title: "KIDZHACK",
