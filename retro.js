@@ -5,21 +5,7 @@
   toggle.type = 'button';
   toggle.textContent = 'Retro';
   toggle.title = 'Toggle Windows 95 theme';
-  document.body.prepend(toggle);
-  const navigation = document.querySelector('.site-nav');
-  function positionRetroToggle() {
-    const navigationRect = navigation.getBoundingClientRect();
-    root.style.setProperty('--mobile-retro-top', `${navigationRect.bottom}px`);
-    root.style.setProperty('--mobile-retro-left', `${navigationRect.left}px`);
-  }
-  function syncRetroVisibility() {
-    toggle.classList.toggle('is-hidden', navigation.classList.contains('is-hidden'));
-  }
-  new ResizeObserver(positionRetroToggle).observe(navigation);
-  new MutationObserver(syncRetroVisibility).observe(navigation, { attributes: true, attributeFilter: ['class'] });
-  window.addEventListener('resize', positionRetroToggle);
-  positionRetroToggle();
-  syncRetroVisibility();
+  (document.querySelector('.site-thanks') || document.body).append(toggle);
   // Tiny bitmap icons retain hard pixel edges when enlarged.
   const colors = { k: '#000', w: '#fff', g: '#c0c0c0', b: '#000080', t: '#00ffff', y: '#ffff00' };
   const patterns = {
@@ -40,6 +26,14 @@
     return img;
   }
   toggle.prepend(icon('computer'));
+  const navigation = document.querySelector('.site-nav');
+  function alignDesktopRetroToggle() {
+    const centeredTop = navigation.offsetTop + (navigation.offsetHeight - toggle.offsetHeight) / 2;
+    root.style.setProperty('--desktop-retro-top', `${centeredTop}px`);
+  }
+  new ResizeObserver(alignDesktopRetroToggle).observe(navigation);
+  window.addEventListener('resize', alignDesktopRetroToggle);
+  alignDesktopRetroToggle();
   [['.hero','Welcome to Reid.exe','computer'],['.about','reid.exe','computer'],['.projects','My Projects','folder'],['.tech-stack','System Properties','computer'],['.photography','My Pictures','photo'],['.contact','Outlook Express','mail']].forEach(([selector,title,symbol]) => {
     const bar = document.createElement('div');
     bar.className = 'retro-titlebar';
@@ -96,7 +90,7 @@
   }
   function setRetro(enabled) {
     root.classList.toggle('retro',enabled);
-    requestAnimationFrame(positionRetroToggle);
+    requestAnimationFrame(alignDesktopRetroToggle);
     if (enabled) document.querySelectorAll('.retro-titlebar').forEach(bar => { bar.hidden = false; });
     updatePreviews(enabled);
     toggle.setAttribute('aria-pressed',String(enabled));

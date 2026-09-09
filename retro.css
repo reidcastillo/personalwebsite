@@ -1,5 +1,5 @@
 .retro-toggle {
- position:fixed;top:8px;right:8px;z-index:40;display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;
+ position:fixed;top:var(--desktop-retro-top, 17px);right:8px;z-index:40;display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;
  background:var(--paper);color:var(--ink);border:2px solid var(--line);box-shadow:4px 4px 0 var(--line);font-size:14px;font-weight:700;
 }
 .retro-icon {width:24px;height:24px;image-rendering:pixelated;flex-shrink:0}
@@ -7,16 +7,11 @@
 @media(max-width:960px) {
  .site-nav {top:14px}
  main {padding-top:112px}
- .retro-toggle {top:var(--mobile-retro-top, 64px);right:auto;left:var(--mobile-retro-left, 8px)}
-}
-.retro-toggle {
- transition:opacity 180ms ease, transform 180ms ease, visibility 180ms;
-}
-.retro-toggle.is-hidden {
- opacity:0;
- visibility:hidden;
- pointer-events:none;
- transform:translateY(-130px);
+ .retro-toggle {
+  position:static;
+  width:max-content;
+  margin:16px auto 0;
+ }
 }
 html:root.retro {--paper:#008080;--ink:#000;--muted:#333;--line:#000;--nav-bg:#c0c0c0;--hot:#000080}
 :root.retro body {background:#008080;font-family:'Courier New',monospace}
