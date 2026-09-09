@@ -9,8 +9,8 @@
   const navigation = document.querySelector('.site-nav');
   function positionRetroToggle() {
     const navigationRect = navigation.getBoundingClientRect();
-    root.style.setProperty('--mobile-retro-top', `${navigationRect.bottom + 10}px`);
-    root.style.setProperty('--mobile-retro-right', `${window.innerWidth - navigationRect.right}px`);
+    root.style.setProperty('--mobile-retro-top', `${navigationRect.bottom}px`);
+    root.style.setProperty('--mobile-retro-left', `${navigationRect.left}px`);
   }
   function syncRetroVisibility() {
     toggle.classList.toggle('is-hidden', navigation.classList.contains('is-hidden'));
@@ -96,6 +96,7 @@
   }
   function setRetro(enabled) {
     root.classList.toggle('retro',enabled);
+    requestAnimationFrame(positionRetroToggle);
     if (enabled) document.querySelectorAll('.retro-titlebar').forEach(bar => { bar.hidden = false; });
     updatePreviews(enabled);
     toggle.setAttribute('aria-pressed',String(enabled));
