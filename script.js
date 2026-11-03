@@ -31,7 +31,6 @@ const projectCopy = {
       "I built the Python and Flask backend, integrated housing data API requests, designed the Bootstrap interface, and deployed the HTTPS site on DigitalOcean.",
     ],
     actions: [
-      { label: "view project", href: "https://weeklycleaningquotes.com/" },
       { label: "view bitbucket", href: "https://bitbucket.org/reidcastillo/workspace/projects/CLEAN" },
     ],
   },
@@ -1874,6 +1873,6 @@ if (contactForm) {
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
 
     if (formStatus) formStatus.textContent = "Opening your email app...";
-    window.location.href = `mailto:reid.castillo@ufl.edu?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:reidacastillo@gmail.com?subject=${subject}&body=${body}`;
   });
 }
